@@ -1,74 +1,51 @@
-import axios from 'axios'
+import { FetchingData } from "../services/api";
+import { createUITable } from "./tableHelpers";
 
-class Fetch {
-	static async get(url: string) {
-		return (await axios.get(url)).data;
-	}
+const findButton = document.getElementById('find') as HTMLButtonElement
+const inputSearch = document.getElementById('search_field') as HTMLInputElement
+const tableSection = document.getElementById('table_section') as HTMLTableSectionElement
 
-	static async post(url: string, payload: any) {
-		return (await axios.post(url, payload)).data;
-	}
+const replaceTable = (parent: HTMLElement, newTable: HTMLTableElement) => {
+	parent.textContent = ''
 
-	static async put(url: string, payload: any) {
-		return (await axios.put(url, payload)).data;
-	}
-
-	static async patch(url: string, payload: any) {
-		return (await axios.patch(url, payload)).data;
-	}
-
-	static async delete(url: string, payload: any) {
-		return (await axios.delete(url, payload)).data;
-	}
+	parent.appendChild(newTable)
 }
 
-// console.log(await Fetch.get('http://localhost:3001/name'))
+const getOrSetData = async () => {
+	if (!localStorage.getItem('original_data')) {
+		const fetchedData = JSON.stringify(await FetchingData.get('http://localhost:3001/name'))
 
-const getHeaders = (objectsArray: object[]): string[] => {
-	const uniqueKeys: string[] = []
+		localStorage.setItem('original_data', fetchedData);
+	}
 
-	for (const obj of objectsArray) {
+	return JSON.parse(localStorage.getItem('original_data') as string)
+}
+
+const createTableFromData = async () => {
+	const response: object[] = await getOrSetData()
+
+	replaceTable(tableSection, createUITable(response))
+}
+
+createTableFromData()
+
+
+const filterTableByInput = async (searchString: string) => {
+	if (!searchString.length) {
+		return replaceTable(tableSection, createUITable(await getOrSetData()))
+	}
+
+	const newData = (await getOrSetData()).filter((obj: object) => {
 		for (const key in obj) {
-			if (uniqueKeys.includes(key)) uniqueKeys.push(key)
+			if (obj[key as keyof typeof obj] === searchString) return obj
 		}
-	}
+	})
 
-	return uniqueKeys
+	newData.length && replaceTable(tableSection, createUITable(newData))
 }
-// const tableSection = document.getElementById('table_section');
-// const arr = getHeaders(Fetch.get("http://localhost:3001/name"))
-console.log(await Fetch.get("http://localhost:3001/name"))
 
+findButton.addEventListener('click', () => {
+	filterTableByInput(inputSearch.value)
 
-// const createTable = (headersArray: string[], dataObject: object[]) => {
-// 	const chessTable = document.createElement('table') as HTMLTableElement
-// 	chessTable.style.height = '200px'
-// 	chessTable.style.width = '200px'
-
-// 	const headersArrayLength = headersArray.length - 1
-// 	const tableHeading = document.createElement('tr') as HTMLTableRowElement
-
-// 	for (let i = 0; i < headersArrayLength; i++) {
-// 		const th = document.createElement('th');
-
-// 		th.textContent = headersArray[i]
-// 		tableHeading.appendChild(th);
-
-// 		chessTable.appendChild(tableHeading);
-// 	}
-
-// 	for (let i = 0; i < 8; i++) {
-// 		const tableRow = document.createElement('tr') as HTMLTableRowElement
-
-// 		for (let j = 0; j < 8; j++) {
-// 			const th = document.createElement('th');
-// 			th.textContent = 'henlo'
-// 			tableRow.appendChild(th);
-// 		}
-
-// 		chessTable.appendChild(tableRow);
-// 	}
-
-// 	tableSection?.append(chessTable)
-// }
-
+	inputSearch.value
+})

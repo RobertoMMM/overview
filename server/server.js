@@ -6,7 +6,6 @@ const app = express();
 const PORT = 3001;
 
 app.use(cors())
-app.use("/dist", express.static("dist"));
 
 app.get("/name", (req, res) => {
   res.header("Content-Type", "application/json");
