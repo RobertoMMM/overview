@@ -2,7 +2,7 @@ enum Additionally {
   additionalKeyName = 'additionalOptions'
 }
 
-export interface AditionalOptions {
+interface AditionalOptions {
 	checkbox: boolean
 }
 
@@ -22,4 +22,4 @@ const addAditionalOptions = (dataObject: DataObject[]) => {
 	return copyData
 }
 
-export { addAditionalOptions, Additionally, DataObject } 
+export { addAditionalOptions, Additionally, DataObject, AditionalOptions } 

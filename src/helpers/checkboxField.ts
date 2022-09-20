@@ -1,7 +1,17 @@
-import { sortCheckedRows } from ".."
+import { tableSection } from ".."
 import { Additionally, DataObject } from "./additionalOptions"
+import { getDataFromLocalStorage } from "./localStorage"
+import { createUITable, replaceTable } from "./table"
 
-const appendSpecialRowField = (content: string) => {
+const sortCheckedRows = () => {
+  const newData = getDataFromLocalStorage("original_data")
+
+  newData.sort((a: any, b: any) => a.additionalOptions.checkbox - b.additionalOptions.checkbox)
+  // replaceTable(tableSection, createUITable(newData))
+  localStorage.setItem('original_data', JSON.stringify(newData))
+}
+
+const appendCheckboxWithText = (content: string) => {
   const checkbox = document.createElement('input') as HTMLInputElement
   const text = document.createElement('div') as HTMLDivElement
 
@@ -14,7 +24,7 @@ const appendSpecialRowField = (content: string) => {
 
 // change checkbox value and save new data to localStorage
 const changeCheckboxValue = (isChecked: boolean, dataObject: DataObject) => {
-  const newData = JSON.parse(localStorage.getItem('original_data') as string)
+  const newData = getDataFromLocalStorage("original_data")
 
   for (const obj of newData) {
     if (JSON.stringify(obj) === JSON.stringify(dataObject)) {
@@ -23,18 +33,18 @@ const changeCheckboxValue = (isChecked: boolean, dataObject: DataObject) => {
       }
     }
   }
-  
-  localStorage.setItem('original_data', JSON.stringify(newData))
 
-  sortCheckedRows()
+  localStorage.setItem('original_data', JSON.stringify(newData))
 }
 
 const addClickEventToElement = (input: HTMLInputElement, dataObject: DataObject) => {
   input.addEventListener('click', () => {
     changeCheckboxValue(input.checked, dataObject);
+    sortCheckedRows()
+    replaceTable(tableSection, createUITable(getDataFromLocalStorage("original_data")))
   })
 }
 
 
-export { appendSpecialRowField, addClickEventToElement }
+export { appendCheckboxWithText, addClickEventToElement, sortCheckedRows }
 

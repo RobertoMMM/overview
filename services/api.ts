@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export class FetchingData {
+class FetchingData {
 	static async get(url: string) {
 		return (await axios.get(url)).data
 	}
@@ -21,3 +21,5 @@ export class FetchingData {
 		return (await axios.delete(url, payload)).data;
 	}
 }
+
+export { FetchingData }
