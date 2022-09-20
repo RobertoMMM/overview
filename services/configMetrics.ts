@@ -6,7 +6,7 @@ type DataObject = {
 
 type Metrics = DataObject & {
   fields: string[],
-  defaultSorting: (header: string) => []
+  defaultSorting: (header: string) => DataObject[]
 }
 
 const createStringArrayHeaders = (objectsArray: object[]) => {
@@ -34,7 +34,7 @@ const sortAscending = (sortingKey: string, dataObject: DataObject[]) => {
   });
 }
 
-const createMetrics = (dataName: string, dataObject: Metrics[]) => {
+const createMetrics = (dataName: string, dataObject: Metrics[]): Metrics => {
   const headers = createStringArrayHeaders(dataObject)
 
   return {

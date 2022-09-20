@@ -69,11 +69,11 @@ const createRowsForTable = (obj: DataObject) => {
   return tableRow
 }
 
-const createUITable = (dataObject: DataObject[]) => {
+const createUITable = (dataObject: object[]) => {
   const mainTable = document.createElement('table') as HTMLTableElement
   mainTable.classList.add('table')
 
-  const dataMetrics = createMetrics('name', dataObject)
+  const dataMetrics = createMetrics('name', dataObject as Metrics[])
 
   const tableHeadersRow = createHeadersTableRow(dataMetrics)
 
