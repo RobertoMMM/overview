@@ -1,25 +1,25 @@
 enum Additionally {
-  additionalKeyName = 'additionalOptions'
+  additionalKeyName = "additionalOptions",
 }
 
 interface AditionalOptions {
-	checkbox: boolean
+  checkbox: boolean;
 }
 
 type DataObject = {
-	[key: string]: number | string | AditionalOptions
-}
+  [key: string]: number | string | AditionalOptions;
+};
 
 const addAditionalOptions = (dataObject: DataObject[]) => {
-	const copyData = structuredClone(dataObject)
+  const copyData = structuredClone(dataObject);
 
-	for (const obj of copyData) {
-		obj[Additionally.additionalKeyName] = {
-			checkbox: false
-		}
-	}
+  for (const obj of copyData) {
+    obj[Additionally.additionalKeyName] = {
+      checkbox: false,
+    };
+  }
 
-	return copyData
-}
+  return copyData;
+};
 
-export { addAditionalOptions, Additionally, DataObject, AditionalOptions } 
+export { addAditionalOptions, Additionally, DataObject, AditionalOptions };

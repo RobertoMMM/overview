@@ -1,67 +1,59 @@
-import { FetchingData } from "../services/api";
-import { addAditionalOptions, DataObject } from "./helpers/additionalOptions";
-import { getDataFromLocalStorage } from "./helpers/localStorage";
-import { createUITable, replaceTable } from "./helpers/table";
+import { createUITable, replaceTable } from "./creatingTable/table";
+import { createPopUpConfigUI } from "./configurator/creatingUI";
+import { createMetrics } from "../services/metricsFactory/configMetrics";
+import { Table } from "./enum";
+import { createRandomData } from "../services/randomDataFactory/createRandom";
+import { person } from "../services/randomDataFactory/structuredData";
+import { ObjectData } from "../services/types";
+import { LocalStorage } from "./helpers/localStorage";
 
-const findButton = document.getElementById('find') as HTMLButtonElement
-const inputSearch = document.getElementById('search_field') as HTMLInputElement
-const tableSection = document.getElementById('table_section') as HTMLTableSectionElement
-const lookFor10Items = document.getElementById('10itemslook') as HTMLButtonElement
-const lookFor100Items = document.getElementById('100itemslook') as HTMLButtonElement
+const inputSearch = document.getElementById("search_field") as HTMLInputElement;
+const formSearch = document.getElementById("search_form") as HTMLFormElement;
 
-const getOrSetData = async () => {
-	if (!localStorage.getItem('original_data')) {
-		const newData = addAditionalOptions(await FetchingData.get('http://localhost:3001/name'))
-		const stringyfiedData = JSON.stringify(newData)
+const tableSection = document.getElementById(
+  "table_section"
+) as HTMLTableSectionElement;
 
-		localStorage.setItem('original_data', stringyfiedData);
-	}
+const getOrSetData = () => {
+  if (!LocalStorage.get(Table.data)) {
+    const newData = createRandomData(person, 100);
+    LocalStorage.set(Table.data, newData);
+  }
 
-	return getDataFromLocalStorage("original_data")
-}
+  return LocalStorage.get(Table.data);
+};
 
-const createTableFromData = async () => {
-	const response: DataObject[] = await getOrSetData()
+const createTableFromData = () => {
+  const response: ObjectData[] = getOrSetData();
+  const data = createMetrics("name", response);
+  document.body.appendChild(createPopUpConfigUI(data));
+  replaceTable(tableSection, createUITable(response));
+};
 
-	replaceTable(tableSection, createUITable(response))
-}
+createTableFromData();
 
-createTableFromData()
+const filterTableByInput = (searchString: string) => {
+  if (!searchString.length) {
+    return replaceTable(tableSection, createUITable(getOrSetData()));
+  }
 
-const filterTableByInput = async (searchString: string) => {
-	if (!searchString.length) {
-		return replaceTable(tableSection, createUITable(await getOrSetData()))
-	}
+  const newData = getOrSetData().filter((obj: ObjectData) => {
+    for (const key in obj) {
+      const value = obj[key as keyof typeof obj].toString();
+      if (value.toLowerCase().includes(searchString.toLowerCase())) return obj;
+    }
+  });
 
-	const newData = (await getOrSetData()).filter((obj: object) => {
-		for (const key in obj) {
-			if (obj[key as keyof typeof obj] === searchString) return obj
-		}
-	})
+  newData.length
+    ? replaceTable(tableSection, createUITable(newData))
+    : alert("No data found");
+};
 
-	newData.length && replaceTable(tableSection, createUITable(newData))
-}
+formSearch.addEventListener("submit", (e) => {
+  e.preventDefault();
+  filterTableByInput(inputSearch.value);
+});
 
-findButton.addEventListener('click', () => {
-	filterTableByInput(inputSearch.value)
+console.log(localStorage.getItem("tableConfig"));
 
-	inputSearch.value
-})
-
-lookFor10Items.addEventListener('click', () => {
-	const data = getDataFromLocalStorage('original_data')
-
-	data.splice(10, data.length)
-
-	replaceTable(tableSection, createUITable(data))
-})
-
-lookFor100Items.addEventListener('click', () => {
-	const data = getDataFromLocalStorage('original_data')
-
-	data.splice(100, data.length)
-
-	replaceTable(tableSection, createUITable(data))
-
-})
-export { tableSection }
+export { tableSection };

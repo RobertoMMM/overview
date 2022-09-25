@@ -1,0 +1,35 @@
+.popUp {
+  width: 50%;
+  height: 75%;
+  border: 3px solid #7f5af0;
+  background: #0f0e17;
+  color: #fffffe;
+  border-radius: 20px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-content: center;
+  font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+    Ubuntu, sans-serif;
+}
+
+.popUp.hide {
+  display: none;
+}
+
+.popUp button {
+  width: 50px;
+  position: absolute;
+  right: 30px;
+  top: 30px;
+}
+
+.mainText {
+  position: absolute;
+  left: 30px;
+  top: 30px;
+  font-weight: 700;
+  font-size: 20px;
+}
