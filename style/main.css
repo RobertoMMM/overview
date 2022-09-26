@@ -1,5 +1,7 @@
 body {
   background-color: #0f0e17;
+  padding: 1%;
+  user-select: none;
 }
 
 input {
@@ -27,7 +29,8 @@ button {
   outline: none;
   position: relative;
   text-align: center;
-  user-select: none;
+  padding: 5px;
+  width: auto;
 }
 
 #configopen {

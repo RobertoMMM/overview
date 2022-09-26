@@ -1,13 +1,14 @@
 import { MetricsArchitecture } from "../../services/metricsFactory/configMetrics";
+import { ObjectData } from "../../services/types";
 import "../../style/configurator.css";
-import { TableConfig } from "../enum";
+import { createUITable, replaceTable } from "../creatingTable/table";
+import { Table, TableConfig } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
 import {
-  createTableConfig,
   getCheckedInputsValue,
   recreateTableConfig,
-  TableConfigurator,
 } from "./config";
+import { createButton } from "./configButtons";
 
 const addSpecialClickEvent = (parent: HTMLElement, event: () => void) => {
   parent.addEventListener("click", (e) => {
@@ -58,9 +59,7 @@ const createDragDropChips = (fields: string[]): HTMLUListElement => {
 
   document.addEventListener("drop", (event: any) => {
     dropTableRow(event);
-    console.log("object");
-    // console.log(recreateTableConfig(selectPerPage.parentElement))
-    // console.log(recreateTableConfig(chipsList.parentElement))
+    recreateTableConfig()
   });
 
   return chipsList;
@@ -77,8 +76,7 @@ const createSelect = <T>(items: T[]) => {
   }
 
   addSpecialClickEvent(selectPerPage, () => {
-    console.log("object");
-    // console.log(recreateTableConfig(selectPerPage.parentElement))
+    recreateTableConfig()
   });
 
   return selectPerPage;
@@ -97,7 +95,6 @@ const createCheckboxesList = (fields: string[]): HTMLUListElement => {
     checkbox.checked = true;
 
     checkbox.addEventListener("click", () => {
-      console.log("object");
       const selectedStrings = getCheckedInputsValue(checkList);
 
       if (selectedStrings.length < 1) return;
@@ -117,6 +114,8 @@ const createCheckboxesList = (fields: string[]): HTMLUListElement => {
 
       newChips.id = TableConfig.chipsClassName;
       popUp?.replaceChild(newChips, oldChips as Element);
+
+      recreateTableConfig()
     });
 
     text.textContent = field;
@@ -135,12 +134,30 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
   popUp.classList.add(TableConfig.popUpClassName);
   popUp.style.display = "none";
 
-  const closeButton = document.createElement("button") as HTMLButtonElement;
-  closeButton.textContent = "X";
+  const closeButton = createButton('X', () => popUp.style.display = "none")
 
-  closeButton.addEventListener("click", () => {
-    popUp.style.display = "none";
-  });
+  const cancelButton = createButton('CANCEL', () => popUp.style.display = "none")
+
+  const saveButton = createButton('SAVE', () => {
+    const allData = LocalStorage.get(Table.data);
+    const newData: ObjectData[] = []
+    const tableConfig = LocalStorage.get(TableConfig.configObj);
+    const chips = tableConfig.chips
+
+    for (const obj of allData) {
+      const temp: ObjectData = {}
+      for (const key in obj) {
+        for (const headers of chips) {
+          if (obj[headers]) {
+            temp[headers] = obj[headers]
+          }
+        }
+      }
+      newData.push(temp)
+    }
+
+    replaceTable(document.querySelector(`#table_section`) as HTMLElement, createUITable(newData))
+  })
 
   const mainText = document.createElement("div");
   mainText.textContent = "Table Configurator";
@@ -151,23 +168,12 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
 
   popUp.appendChild(mainText);
   popUp.appendChild(closeButton);
+  popUp.appendChild(cancelButton);
+  popUp.appendChild(saveButton);
   popUp.appendChild(selectPerPage);
 
-  const tableConfig = LocalStorage.get(TableConfig.configObj);
-  let localStorageTableConfig: TableConfigurator = tableConfig;
-
-  let checkboxesList: HTMLUListElement;
-
-  if (!tableConfig) {
-    const { fields } = metrics;
-
-    checkboxesList = createCheckboxesList(fields);
-
-    const chekedCheckboxes = getCheckedInputsValue(checkboxesList);
-    localStorageTableConfig = createTableConfig(chekedCheckboxes);
-  } else {
-    checkboxesList = createCheckboxesList(localStorageTableConfig.checkboxes);
-  }
+  const { fields } = metrics;
+  let checkboxesList: HTMLUListElement = createCheckboxesList(fields);
 
   const checkedHeaders = getCheckedInputsValue(checkboxesList);
 

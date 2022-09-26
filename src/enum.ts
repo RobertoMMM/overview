@@ -12,9 +12,4 @@ enum TableConfig {
   sorting = "sorting",
 }
 
-enum ConfigSorting {
-  ascending = "ascending",
-  descending = "descending",
-}
-
-export { Table, TableConfig, ConfigSorting };
+export { Table, TableConfig };

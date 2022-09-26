@@ -1,86 +1,105 @@
 .popUp {
-  width: 50%;
-  height: 75%;
-  border: 3px solid #7f5af0;
-  background: #0f0e17;
-  color: #fffffe;
-  border-radius: 20px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-content: center;
-  font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
-    Ubuntu, sans-serif;
-  overflow: hidden;
+	width: 50%;
+	height: 60%;
+	border: 3px solid #7f5af0;
+	background: #0f0e17;
+	color: #fffffe;
+	border-radius: 20px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display: grid;
+	place-content: center;
+	font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
+		Ubuntu, sans-serif;
+	overflow: hidden;
 }
 
 .popUp button {
-  width: 50px;
-  position: absolute;
-  right: 30px;
-  top: 30px;
+	position: absolute;
+}
+
+.popUp button:nth-of-type(1) {
+	right: 30px;
+	top: 30px;
+}
+
+.popUp button:nth-of-type(2) {
+	border: 2px solid red;
+	background-color: transparent;
+	color: red;
+	right: 80px;
+	bottom: 10px;
+}
+
+.popUp button:nth-of-type(3) {
+	border: 2px solid #2cb67d;
+	background-color: transparent;
+	color: #2cb67d;
+	right: 10px;
+	bottom: 10px;
 }
 
 .mainText {
-  position: absolute;
-  left: 30px;
-  top: 30px;
-  font-weight: 700;
-  font-size: 20px;
+	position: absolute;
+	left: 30px;
+	top: 30px;
+	font-weight: 700;
+	font-size: 20px;
 }
 
 .popUp select {
-  height: 40px;
-  width: 200px;
-  background-color: #7f5af0;
-  border: 2px solid #2cb67d;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  position: absolute;
+	height: 40px;
+	width: 200px;
+	background-color: #7f5af0;
+	border: 2px solid #2cb67d;
+	border-radius: 10px;
+	font-size: 15px;
+	font-weight: 600;
+	position: absolute;
 }
 
 .popUp #selectPerPage {
-  width: 90%;
-  top: 100px;
-  left: 5%;
+	width: 90%;
+	top: 100px;
+	left: 5%;
 }
 
 .popUp #fieldName {
-  width: 40%;
-  top: 160px;
-  left: 5%;
+	width: 40%;
+	top: 160px;
+	left: 5%;
 }
 
 .popUp #sorting {
-  width: 40%;
-  top: 160px;
-  right: 5%;
+	width: 40%;
+	top: 160px;
+	right: 5%;
 }
 
 .popUp #checkboxes,
 .popUp #chipsClassName {
-  position: absolute;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
-  top: 350px;
-  list-style: none;
-  gap: 20px;
-  border: 2px solid #2cb67d;
-  width: 90%;
-  padding: 10px;
-  margin: 5%;
+	position: absolute;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
+	top: 350px;
+	list-style: none;
+	gap: 20px;
+	border: solid #2cb67d;
+	border-left: 0;
+	border-right: 0;
+	width: 100%;
+	padding: 10px;
 }
 
 .popUp #chipsClassName {
-  top: 250px;
+	top: 250px;
 }
 
 .popUp #checkboxes li {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
 }

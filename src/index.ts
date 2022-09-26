@@ -63,6 +63,4 @@ openConfig.addEventListener("click", (e) => {
   config.style.display = "grid";
 });
 
-console.log(localStorage.getItem("tableConfig"));
-
 export { tableSection };

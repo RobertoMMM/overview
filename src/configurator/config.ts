@@ -1,11 +1,11 @@
-import { ConfigSorting, TableConfig } from "../enum";
+import { TableConfig } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
 
 interface TableConfigurator {
   itemsPerPage: number;
   sortingField: {
     fieldName: string;
-    sortingValue: ConfigSorting.ascending | ConfigSorting.descending;
+    sortingValue: string;
   };
   chips: string[];
   checkboxes: string[];
@@ -23,10 +23,6 @@ const getCheckedInputsValue = (checkboxes: HTMLUListElement): string[] => {
   }
 
   return selectedCheckBoxesStrings;
-};
-
-const setTableConfig = (tableConfig: TableConfigurator) => {
-  LocalStorage.set(TableConfig.configObj, tableConfig);
 };
 
 const createTableConfig = (checkedHeaders: string[]) => {
@@ -49,31 +45,44 @@ const getChips = (chips: HTMLUListElement) => {
   return actualChips;
 };
 
-const recreateTableConfig = (parent: HTMLElement) => {
+const setTableConfig = (tableConfig: TableConfigurator) => {
+  LocalStorage.set(TableConfig.configObj, tableConfig);
+};
+
+const recreateTableConfig = () => {
+  const popUp = document.querySelector(`#${TableConfig.popUpClassName}`) as HTMLElement;
+
   const perPageOption = (
-    parent.querySelector(
+    popUp.querySelector(
       `#${TableConfig.perPageClassName}`
     ) as HTMLSelectElement
   ).selectedOptions[0].value;
 
   const fieldSelected = (
-    parent.querySelector(`#${TableConfig.fieldName}`) as HTMLSelectElement
+    popUp.querySelector(`#${TableConfig.fieldName}`) as HTMLSelectElement
   ).selectedOptions[0].value;
 
   const sortingMethod = (
-    parent.querySelector(`#${TableConfig.sorting}`) as HTMLSelectElement
+    popUp.querySelector(`#${TableConfig.sorting}`) as HTMLSelectElement
   ).selectedOptions[0].value;
 
   const chips = getChips(
-    parent.querySelector(`#${TableConfig.chipsClassName}`) as HTMLUListElement
+    popUp.querySelector(`#${TableConfig.chipsClassName}`) as HTMLUListElement
   );
 
   const checkboxes = getCheckedInputsValue(
-    parent.querySelector(`#${TableConfig.checkboxes}`) as HTMLUListElement
+    popUp.querySelector(`#${TableConfig.checkboxes}`) as HTMLUListElement
   );
 
-  console.log(perPageOption, fieldSelected, sortingMethod, chips, checkboxes);
-  // setTableConfig()
+  setTableConfig({
+    itemsPerPage: parseInt(perPageOption),
+    sortingField: {
+      fieldName: fieldSelected,
+      sortingValue: sortingMethod
+    },
+    chips: chips,
+    checkboxes: checkboxes,
+  })
 };
 
 export {
