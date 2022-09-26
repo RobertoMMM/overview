@@ -1,14 +1,16 @@
 import { createUITable, replaceTable } from "./creatingTable/table";
 import { createPopUpConfigUI } from "./configurator/creatingUI";
 import { createMetrics } from "../services/metricsFactory/configMetrics";
-import { Table } from "./enum";
+import { Table, TableConfig } from "./enum";
 import { createRandomData } from "../services/randomDataFactory/createRandom";
 import { person } from "../services/randomDataFactory/structuredData";
 import { ObjectData } from "../services/types";
 import { LocalStorage } from "./helpers/localStorage";
+import "../style/configurator.css";
 
 const inputSearch = document.getElementById("search_field") as HTMLInputElement;
 const formSearch = document.getElementById("search_form") as HTMLFormElement;
+const openConfig = document.getElementById("configopen") as HTMLButtonElement;
 
 const tableSection = document.getElementById(
   "table_section"
@@ -52,6 +54,13 @@ const filterTableByInput = (searchString: string) => {
 formSearch.addEventListener("submit", (e) => {
   e.preventDefault();
   filterTableByInput(inputSearch.value);
+});
+
+openConfig.addEventListener("click", (e) => {
+  const config = document.querySelector(
+    `#${TableConfig.popUpClassName}`
+  ) as HTMLDivElement;
+  config.style.display = "grid";
 });
 
 console.log(localStorage.getItem("tableConfig"));

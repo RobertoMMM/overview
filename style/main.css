@@ -29,3 +29,9 @@ button {
   text-align: center;
   user-select: none;
 }
+
+#configopen {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}

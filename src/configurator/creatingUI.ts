@@ -2,33 +2,17 @@ import { MetricsArchitecture } from "../../services/metricsFactory/configMetrics
 import "../../style/configurator.css";
 import { TableConfig } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
-import { getCheckedInputsValue, TableConfigurator } from "./config";
+import {
+  createTableConfig,
+  getCheckedInputsValue,
+  recreateTableConfig,
+  TableConfigurator,
+} from "./config";
 
-const createCheckboxesList = (fields: string[]): HTMLUListElement => {
-  const checkList = document.createElement("ul") as HTMLUListElement;
-
-  for (const field of fields) {
-    const listItem = document.createElement("li") as HTMLLIElement;
-    const checkbox = document.createElement("input") as HTMLInputElement;
-    const text = document.createElement("div") as HTMLDivElement;
-
-    checkbox.setAttribute("type", "checkbox");
-    checkbox.checked = true;
-
-    checkbox.addEventListener("click", () => {
-      const selectedStrings = getCheckedInputsValue(checkList)
-
-      // recreateTableConfig(checkList.parentElement);
-    });
-
-    text.textContent = field;
-
-    listItem.appendChild(text);
-    listItem.appendChild(checkbox);
-    checkList.appendChild(listItem);
-  }
-
-  return checkList;
+const addSpecialClickEvent = (parent: HTMLElement, event: () => void) => {
+  parent.addEventListener("click", (e) => {
+    e.target?.addEventListener("click", event);
+  });
 };
 
 const createDragDropChips = (fields: string[]): HTMLUListElement => {
@@ -74,34 +58,88 @@ const createDragDropChips = (fields: string[]): HTMLUListElement => {
 
   document.addEventListener("drop", (event: any) => {
     dropTableRow(event);
+    console.log("object");
+    // console.log(recreateTableConfig(selectPerPage.parentElement))
+    // console.log(recreateTableConfig(chipsList.parentElement))
   });
 
   return chipsList;
 };
 
-const createSelect = <T,>(itemsPerPage: T[]) => {
+const createSelect = <T>(items: T[]) => {
   const selectPerPage = document.createElement("select") as HTMLSelectElement;
 
-  for (const items of itemsPerPage) {
-    const optionItems = document.createElement("option") as HTMLOptionElement;
+  for (const item of items) {
+    const optionItem = document.createElement("option") as HTMLOptionElement;
 
-    optionItems.textContent = `${items}`;
-    selectPerPage.appendChild(optionItems);
+    optionItem.textContent = `${item}`;
+    selectPerPage.appendChild(optionItem);
   }
 
+  addSpecialClickEvent(selectPerPage, () => {
+    console.log("object");
+    // console.log(recreateTableConfig(selectPerPage.parentElement))
+  });
+
   return selectPerPage;
+};
+
+const createCheckboxesList = (fields: string[]): HTMLUListElement => {
+  const checkList = document.createElement("ul") as HTMLUListElement;
+  checkList.id = TableConfig.checkboxes;
+
+  for (const field of fields) {
+    const listItem = document.createElement("li") as HTMLLIElement;
+    const checkbox = document.createElement("input") as HTMLInputElement;
+    const text = document.createElement("div") as HTMLDivElement;
+
+    checkbox.setAttribute("type", "checkbox");
+    checkbox.checked = true;
+
+    checkbox.addEventListener("click", () => {
+      console.log("object");
+      const selectedStrings = getCheckedInputsValue(checkList);
+
+      if (selectedStrings.length < 1) return;
+
+      const oldSelectFieldName = document.querySelector(
+        `#${TableConfig.fieldName}`
+      );
+      const oldChips = document.querySelector(`#${TableConfig.chipsClassName}`);
+
+      const popUp = document.querySelector(`#${TableConfig.popUpClassName}`);
+
+      const newSelectFieldName = createSelect(selectedStrings);
+      const newChips = createDragDropChips(selectedStrings);
+
+      newSelectFieldName.id = TableConfig.fieldName;
+      popUp?.replaceChild(newSelectFieldName, oldSelectFieldName as Element);
+
+      newChips.id = TableConfig.chipsClassName;
+      popUp?.replaceChild(newChips, oldChips as Element);
+    });
+
+    text.textContent = field;
+
+    listItem.appendChild(text);
+    listItem.appendChild(checkbox);
+    checkList.appendChild(listItem);
+  }
+
+  return checkList;
 };
 
 const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
   const popUp = document.createElement("div") as HTMLDivElement;
   popUp.id = TableConfig.popUpClassName;
   popUp.classList.add(TableConfig.popUpClassName);
+  popUp.style.display = "none";
 
   const closeButton = document.createElement("button") as HTMLButtonElement;
   closeButton.textContent = "X";
 
   closeButton.addEventListener("click", () => {
-    popUp.classList.add("hide");
+    popUp.style.display = "none";
   });
 
   const mainText = document.createElement("div");
@@ -115,66 +153,38 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
   popUp.appendChild(closeButton);
   popUp.appendChild(selectPerPage);
 
-  const localStorageTableConfig: TableConfigurator = LocalStorage.get(TableConfig.configObj)
+  const tableConfig = LocalStorage.get(TableConfig.configObj);
+  let localStorageTableConfig: TableConfigurator = tableConfig;
 
-  let fieldName, sortingValue, chips, checkboxesList
+  let checkboxesList: HTMLUListElement;
 
-  if (localStorageTableConfig) {
-    const { checkboxes } = localStorageTableConfig;
-
-    chips = createDragDropChips(checkboxes);
-    chips.id = TableConfig.chipsClassName;
-
-    checkboxesList = createCheckboxesList(checkboxes);
-    checkboxesList.id = TableConfig.checkboxes;
-
-    const listStringNames = checkboxesList.getElementsByTagName('div')
-    const listChekedStrings = checkboxesList.getElementsByTagName('input')
-
-    const checkedHeaders: string[] = []
-
-    for (let i = 0; i < listStringNames.length; i++) {
-      if (listChekedStrings[i].checked === true) {
-        checkedHeaders.push(listStringNames[i].textContent as string)
-      }
-    }
-
-    fieldName = createSelect(checkedHeaders)
-
-    sortingValue = createSelect(['ascending', 'descending'])
-  } else {
-    const { fields } = metrics
-    chips = createDragDropChips(fields);
-    chips.id = TableConfig.chipsClassName;
+  if (!tableConfig) {
+    const { fields } = metrics;
 
     checkboxesList = createCheckboxesList(fields);
-    checkboxesList.id = TableConfig.checkboxes;
 
-    const listStringNames = checkboxesList.getElementsByTagName('div')
-    const listChekedStrings = checkboxesList.getElementsByTagName('input')
-
-    const checkedHeaders: string[] = []
-
-    for (let i = 0; i < listStringNames.length; i++) {
-      if (listChekedStrings[i].checked === true) {
-        checkedHeaders.push(listStringNames[i].textContent as string)
-      }
-    }
-
-    fieldName = createSelect(checkedHeaders)
-
-    sortingValue = createSelect(['ascending', 'descending'])
-
-    LocalStorage.set(TableConfig.configObj, {
-      itemsPerPage: 50, 
-      checkboxes: checkedHeaders
-    })
+    const chekedCheckboxes = getCheckedInputsValue(checkboxesList);
+    localStorageTableConfig = createTableConfig(chekedCheckboxes);
+  } else {
+    checkboxesList = createCheckboxesList(localStorageTableConfig.checkboxes);
   }
+
+  const checkedHeaders = getCheckedInputsValue(checkboxesList);
+
+  const chips = createDragDropChips(checkedHeaders);
+  chips.id = TableConfig.chipsClassName;
+
+  popUp.appendChild(chips);
+  popUp.appendChild(checkboxesList);
+
+  const fieldName = createSelect(checkedHeaders);
+  fieldName.id = TableConfig.fieldName;
+
+  const sortingValue = createSelect(["ascending", "descending"]);
+  sortingValue.id = TableConfig.sorting;
 
   popUp.appendChild(fieldName);
   popUp.appendChild(sortingValue);
-  popUp.appendChild(chips);
-  popUp.appendChild(checkboxesList);
 
   return popUp;
 };

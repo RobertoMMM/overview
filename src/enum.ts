@@ -8,6 +8,13 @@ enum TableConfig {
   perPageClassName = "selectPerPage",
   chipsClassName = "chipsClassName",
   checkboxes = "checkboxes",
+  fieldName = "fieldName",
+  sorting = "sorting",
 }
 
-export { Table, TableConfig };
+enum ConfigSorting {
+  ascending = "ascending",
+  descending = "descending",
+}
+
+export { Table, TableConfig, ConfigSorting };

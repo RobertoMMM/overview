@@ -13,10 +13,7 @@
   place-content: center;
   font-family: -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue",
     Ubuntu, sans-serif;
-}
-
-.popUp.hide {
-  display: none;
+  overflow: hidden;
 }
 
 .popUp button {
@@ -32,4 +29,58 @@
   top: 30px;
   font-weight: 700;
   font-size: 20px;
+}
+
+.popUp select {
+  height: 40px;
+  width: 200px;
+  background-color: #7f5af0;
+  border: 2px solid #2cb67d;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  position: absolute;
+}
+
+.popUp #selectPerPage {
+  width: 90%;
+  top: 100px;
+  left: 5%;
+}
+
+.popUp #fieldName {
+  width: 40%;
+  top: 160px;
+  left: 5%;
+}
+
+.popUp #sorting {
+  width: 40%;
+  top: 160px;
+  right: 5%;
+}
+
+.popUp #checkboxes,
+.popUp #chipsClassName {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20%, 1fr));
+  top: 350px;
+  list-style: none;
+  gap: 20px;
+  border: 2px solid #2cb67d;
+  width: 90%;
+  padding: 10px;
+  margin: 5%;
+}
+
+.popUp #chipsClassName {
+  top: 250px;
+}
+
+.popUp #checkboxes li {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
 }
