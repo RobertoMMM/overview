@@ -3,13 +3,8 @@
   border-collapse: collapse;
   margin: 25px 0;
   font-size: 0.9em;
-  font-family: sans-serif;
   width: 100%;
-  color: #fffffe;
-  border-top: 2px solid #7f5af0;
   text-align: center;
-  border-top: 2px solid #2cb67d;
-  border-bottom: 2px solid #2cb67d;
 }
 
 .table select {
@@ -23,25 +18,38 @@
   outline: none;
 }
 
-.table th {
-  border-top: 1px solid #7f5af0;
-}
-
 .table td div {
   height: 30px;
   text-transform: capitalize;
   font-weight: 600;
   font-size: larger;
-  color: white;
   letter-spacing: 2px;
 }
 
+.table tr:nth-child(1) td:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.table tr:nth-child(1) td:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
 .table tr:nth-child(1) td {
+  border-top: 2px solid #3b3bc3;
+  border-bottom: 2px solid #3b3bc3;
   padding: 10px;
   background: #0f0e17;
   display: flex;
   justify-content: center;
   gap: calc(10% + 3px);
+}
+
+.table tr button {
+  width: 30px;
+  height: 30px;
+  transform: rotate(90deg);
 }
 
 .table select,
@@ -50,18 +58,16 @@
 }
 
 .table tr {
+  border-radius: 5px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10%, 1fr));
-}
-
-.table tr:nth-child(2) th {
-  border-top: 2px solid #2cb67d;
+  background-color: #0f0e17;
 }
 
 .table tr:nth-of-type(even) {
-  background-color: #242629;
+  border-left: 2px solid #3b3bc3;
 }
 
 .table tr:nth-of-type(odd) {
-  background-color: #0f0e17;
+  background-color: #242629;
 }

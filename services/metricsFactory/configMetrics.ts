@@ -13,7 +13,7 @@ interface MetricsArchitecture {
   fields: string[];
 }
 
-type OrderSorting = "asc" | "desc";
+type OrderSorting = "ascending" | "descending";
 
 const sortData = (
   sortingKey: string,
@@ -32,7 +32,7 @@ const sortData = (
 
     let comparison = dataA > dataB ? 1 : -1;
 
-    return order === "asc" ? comparison : comparison * -1;
+    return order === "ascending" ? comparison : comparison * -1;
   });
 };
 
@@ -47,12 +47,12 @@ const createMetrics = (
     defaultLimit: headers.length,
     defaultSorting: {
       sortAscending: (sortingKey: string, dataObject: ObjectData[]) =>
-        sortData(sortingKey, dataObject, "asc"),
+        sortData(sortingKey, dataObject, "ascending"),
       sortDescending: (sortingKey: string, dataObject: ObjectData[]) =>
-        sortData(sortingKey, dataObject, "desc"),
+        sortData(sortingKey, dataObject, "descending"),
     },
     fields: headers,
   };
 };
 
-export { createMetrics, MetricsArchitecture };
+export { createMetrics, MetricsArchitecture, sortData };

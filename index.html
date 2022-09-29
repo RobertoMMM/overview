@@ -6,13 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <link rel="stylesheet" href="./style/main.css" />
+    <link rel="stylesheet" href="./style/configurator.css" />
+    <link rel="stylesheet" href="./style/pagination.css" />
   </head>
   <body>
+    <!-- popUp start -->
+    <form id="popUp">
+      <span class="mainText">Table Configuration</span>
+      <button id="closeConfig">Close</button>
+      <div class="perPage">
+        <label>Items per page</label>
+        <select id="selectPerPage"></select>
+      </div>
+      <div class="fieldName">
+        <label>Field name</label>
+        <select id="fieldName"></select>
+      </div>
+      <div class="sorting">
+        <label>Sorting value</label>
+        <select id="sorting"></select>
+      </div>
+      <ul id="chipsClassName"></ul>
+      <ul id="checkboxes"></ul>
+      <div id="buttonPlace">
+        <button id="configCancelButton">Cancel</button>
+        <button id="configSaveButton">Save</button>
+      </div>
+    </form>
+    <!-- popUp end -->
+    <!-- search form start -->
     <form id="search_form">
       <input id="search_field" placeholder="Look for a specific data" />
+      <div id="rangeDate">
+        <label>
+          From
+          <input id="dateStart" type="date" />
+        </label>
+        <label>
+          To
+          <input id="dateEnd" type="date" />
+        </label>
+      </div>
     </form>
-    <button id="configopen">Open Config</button>
+    <!-- search form end -->
+    <button id="openConfig">Open Config</button>
     <section id="table_section"></section>
+    <!-- table pagination start -->
+    <form class="tablePagination">
+      <span class="perPage">
+        <label>Items per page</label>
+        <input type="number" id="currentPerPage" min="0" value="0" />
+      </span>
+      <span class="control">
+        <button id="prevPage"><</button>
+        <span>
+          <label>Current Page</label>
+          <input type="number" id="currentPage" min="0" value="0" />
+        </span>
+        <button id="nextPage">></button>
+      </span>
+    </form>
+    <!-- table pagination end -->
     <script type="module" src="./src/index.ts"></script>
   </body>
 </html>

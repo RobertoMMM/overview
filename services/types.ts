@@ -1,7 +1,7 @@
 type KeysPossibleValues = Date | number | string | object;
 
 type ObjectData = {
-  [key: string]: KeysPossibleValues;
+  [key: string | number]: KeysPossibleValues;
 };
 
 export { KeysPossibleValues, ObjectData };

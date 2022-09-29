@@ -2,11 +2,11 @@ import "../../style/table.css";
 import { ObjectData } from "../../services/types";
 import { createHeadersTableRow, createRowsForTable } from "./rows";
 
-const replaceTable = (parent: HTMLElement, newTable: HTMLTableElement) => {
-  // removing all children from parent
+const replaceTable = (newTable: HTMLTableElement) => {
+  const parent = document.getElementById("table_section") as HTMLElement;
   parent.textContent = "";
 
-  parent.appendChild(newTable);
+  parent.append(newTable);
 };
 
 const createUITable = (dataObject: ObjectData[]) => {

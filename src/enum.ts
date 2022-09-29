@@ -1,5 +1,7 @@
 enum Table {
   data = "mainData",
+  tempData = "tempData",
+  paginationData = "paginationData",
 }
 
 enum TableConfig {
@@ -12,4 +14,8 @@ enum TableConfig {
   sorting = "sorting",
 }
 
-export { Table, TableConfig };
+enum Storage {
+  prevPath = "prevPath",
+}
+
+export { Table, TableConfig, Storage };

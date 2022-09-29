@@ -1,5 +1,9 @@
+import { sortData } from "../../services/metricsFactory/configMetrics";
 import { DataCreationDate } from "../../services/randomDataFactory/structuredData";
 import { ObjectData } from "../../services/types";
+import { Table } from "../enum";
+import { LocalStorage } from "../helpers/localStorage";
+import { createUITable, replaceTable } from "./table";
 
 const createStringArrayHeaders = (objectsArray: ObjectData[]) => {
   const uniqueKeys: string[] = [];
@@ -21,42 +25,47 @@ const createHeadersTableRow = (dataObject: ObjectData[]) => {
 
   for (const headers of headersArray) {
     const header = document.createElement("td") as HTMLHeadElement;
-    const select = document.createElement("select") as HTMLSelectElement;
     const headerText = document.createElement("div") as HTMLDivElement;
-    const option = document.createElement("option") as HTMLOptionElement;
+    const sortingButton = document.createElement("button") as HTMLButtonElement;
+    sortingButton.textContent = "<";
 
-    option.textContent = "ASC sort";
+    sortingButton.addEventListener("click", (e) => {
+      e.preventDefault();
 
-    // select.addEventListener("click", (e) => {
-    //   e.target?.addEventListener("click", () => {
-    //     replaceTable(
-    //       tableSection,
-    //       createUITable(metrics.defaultSorting(headers))
-    //     );
-    //   });
-    // });
+      const formattedData = LocalStorage.get(Table.paginationData);
+      const currentPageInput = document.getElementById(
+        "currentPage"
+      ) as HTMLInputElement;
+      const pageInputValue = parseInt(currentPageInput.value) || 0;
+
+      const sortedData = sortData(
+        headers,
+        formattedData[pageInputValue],
+        "ascending"
+      );
+
+      replaceTable(createUITable(sortedData));
+    });
 
     headerText.textContent = headers;
 
-    select.appendChild(option);
     header.appendChild(headerText);
-    header.appendChild(select);
+    header.appendChild(sortingButton);
     headersRow.appendChild(header);
   }
 
   return headersRow;
 };
 
-const createRowsForTable = (obj: ObjectData) => {
+const createRowsForTable = (data: ObjectData) => {
   const tableRow = document.createElement("tr") as HTMLTableRowElement;
-  tableRow.setAttribute("draggable", "true");
   tableRow.setAttribute("id", `${Math.random()}`);
 
-  for (const key in obj) {
+  for (const key in data) {
     if (key === DataCreationDate.hidden) break;
     const th = document.createElement("th");
 
-    th.textContent = obj[key as keyof typeof obj].toString();
+    th.textContent = data[key as keyof typeof data].toString();
 
     tableRow.appendChild(th);
   }

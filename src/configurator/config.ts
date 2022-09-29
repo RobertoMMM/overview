@@ -50,12 +50,12 @@ const setTableConfig = (tableConfig: TableConfigurator) => {
 };
 
 const recreateTableConfig = () => {
-  const popUp = document.querySelector(`#${TableConfig.popUpClassName}`) as HTMLElement;
+  const popUp = document.querySelector(
+    `#${TableConfig.popUpClassName}`
+  ) as HTMLElement;
 
   const perPageOption = (
-    popUp.querySelector(
-      `#${TableConfig.perPageClassName}`
-    ) as HTMLSelectElement
+    popUp.querySelector(`#${TableConfig.perPageClassName}`) as HTMLSelectElement
   ).selectedOptions[0].value;
 
   const fieldSelected = (
@@ -78,11 +78,11 @@ const recreateTableConfig = () => {
     itemsPerPage: parseInt(perPageOption),
     sortingField: {
       fieldName: fieldSelected,
-      sortingValue: sortingMethod
+      sortingValue: sortingMethod,
     },
     chips: chips,
     checkboxes: checkboxes,
-  })
+  });
 };
 
 export {
