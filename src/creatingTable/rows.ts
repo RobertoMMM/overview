@@ -1,7 +1,7 @@
 import { sortData } from "../../services/metricsFactory/configMetrics";
-import { DataCreationDate } from "../../services/randomDataFactory/structuredData";
+import { DataCreationDate } from "../../services/randomDataFactory/dataStructure";
 import { ObjectData } from "../../services/types";
-import { Table } from "../enum";
+import { DATA } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
 import { createUITable, replaceTable } from "./table";
 
@@ -32,7 +32,7 @@ const createHeadersTableRow = (dataObject: ObjectData[]) => {
     sortingButton.addEventListener("click", (e) => {
       e.preventDefault();
 
-      const formattedData = LocalStorage.get(Table.paginationData);
+      const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
       const currentPageInput = document.getElementById(
         "currentPage"
       ) as HTMLInputElement;

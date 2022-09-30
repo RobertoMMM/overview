@@ -1,0 +1,171 @@
+.dataRangePicker {
+  border-radius: 1.875rem;
+  padding: 1.25rem;
+  position: fixed;
+  z-index: 1;
+  overflow: hidden;
+  display: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  user-select: none;
+  background-color: #03060b;
+  border: 2px solid #2cb67d;
+  color: #7f5af0;
+}
+
+.dataRangePicker.show {
+  display: flex;
+}
+
+.pickerHeader.hide {
+  visibility: hidden;
+}
+
+.pickerHeader {
+  visibility: visible;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.563rem;
+  font-weight: 600;
+  padding: 0.625rem;
+}
+
+.pickerBody.hide {
+  visibility: hidden;
+}
+
+.pickerBody {
+  visibility: visible;
+  padding: 0.625rem;
+}
+
+.weekDays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  font-weight: 600;
+}
+.weekDays div {
+  display: grid;
+  place-items: center;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.125rem;
+}
+
+.days div {
+  width: 3.125rem;
+  height: 3.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.313rem;
+  position: relative;
+  cursor: pointer;
+}
+
+.monthPicker {
+  padding: 0.313rem;
+  border-radius: 0.625rem;
+  cursor: pointer;
+}
+
+.yearPicker {
+  display: flex;
+  align-items: center;
+}
+
+.yearChangeButton {
+  background-color: #2cb67d;
+  display: flex;
+  margin: 10px;
+  justify-content: center;
+  align-items: center;
+  height: 2rem;
+  width: 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.days div span {
+  position: absolute;
+}
+
+.days div span:nth-child(1),
+.days div span:nth-child(3) {
+  width: 0.125rem;
+  height: 0;
+}
+
+.days div:hover span:nth-child(1),
+.days div:hover span:nth-child(3) {
+  height: 100%;
+}
+
+.days div span:nth-child(1) {
+  bottom: 0;
+  left: 0;
+}
+
+.days div span:nth-child(3) {
+  top: 0;
+  right: 0;
+}
+
+.days div span:nth-child(2),
+.days div span:nth-child(4) {
+  width: 0;
+  height: 0.125rem;
+}
+
+.days div:hover span:nth-child(2),
+.days div:hover span:nth-child(4) {
+  width: 100%;
+}
+
+.days div span:nth-child(2) {
+  top: 0;
+  left: 0;
+}
+
+.days div span:nth-child(4) {
+  bottom: 0;
+  right: 0;
+}
+
+.monthsList {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: var(--bg-main);
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 0.313rem;
+  transform: scale(1.5);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.monthsList.show {
+  transform: scale(1);
+  visibility: visible;
+  pointer-events: visible;
+}
+.monthsList > div {
+  display: grid;
+  place-items: center;
+}
+
+.monthsList > div > div {
+  width: 100%;
+  padding: 0.313rem 1.25rem;
+  border-radius: 0.625rem;
+  text-align: center;
+  cursor: pointer;
+}

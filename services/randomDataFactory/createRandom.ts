@@ -1,12 +1,8 @@
-import { KeysPossibleValues } from "../types";
+import { KeysPossibleValues, ObjectData } from "../types";
 
 interface RandomDataStructure {
   key: string;
   possibleValues: KeysPossibleValues[];
-}
-
-interface DataStructure {
-  [key: string]: KeysPossibleValues;
 }
 
 const getRandomElement = (dataArray: KeysPossibleValues[]) => {
@@ -17,8 +13,8 @@ const getRandomElement = (dataArray: KeysPossibleValues[]) => {
 
 const createObjectKeysWithRandomData = (
   randomData: RandomDataStructure[]
-): DataStructure => {
-  const storedObj: DataStructure = {};
+): ObjectData => {
+  const storedObj: ObjectData = {};
 
   for (const { key, possibleValues } of randomData) {
     const data = getRandomElement(possibleValues);
@@ -33,7 +29,7 @@ const createRandomData = (
   randomData: RandomDataStructure[],
   amount: number
 ) => {
-  const storedData: DataStructure[] = [];
+  const storedData: ObjectData[] = [];
 
   for (let i = 0; i < amount; i++) {
     const random = createObjectKeysWithRandomData(randomData);

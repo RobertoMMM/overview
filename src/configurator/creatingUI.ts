@@ -2,11 +2,10 @@ import {
   MetricsArchitecture,
   sortData,
 } from "../../services/metricsFactory/configMetrics";
-import { DataCreationDate } from "../../services/randomDataFactory/structuredData";
+import { DataCreationDate } from "../../services/randomDataFactory/dataStructure";
 import { ObjectData } from "../../services/types";
 import "../../style/configurator.css";
-import { createUITable, replaceTable } from "../creatingTable/table";
-import { Table, TableConfig } from "../enum";
+import { DATA, TableConfig } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
 import { updateTablePagination } from "../pagination/tablePagination";
 import { getCheckedInputsValue, recreateTableConfig } from "./config";
@@ -137,7 +136,7 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
   const closeConfig = () => (popUp.style.display = "none");
 
   const createNewDataFromConfig = () => {
-    const allData = LocalStorage.get(Table.data);
+    const allData = LocalStorage.get(DATA.UNIQUE_DATA);
     const newData: ObjectData[] = [];
     const tableConfig = LocalStorage.get(TableConfig.configObj);
 
@@ -160,7 +159,7 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
 
     const sortedData = sortData(fieldName, newData, sortingValue);
 
-    LocalStorage.set(Table.tempData, sortedData);
+    LocalStorage.set(DATA.TEMP_DATA, sortedData);
 
     updateTablePagination();
   };

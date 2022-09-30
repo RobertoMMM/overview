@@ -1,34 +1,35 @@
 import { createUITable, replaceTable } from "./creatingTable/table";
 import { createPopUpConfigUI } from "./configurator/creatingUI";
 import { createMetrics } from "../services/metricsFactory/configMetrics";
-import { Storage, Table } from "./enum";
-import {
-  DataCreationDate,
-  RANDOM_DATA,
-} from "../services/randomDataFactory/structuredData";
+import { SERVER, STORAGE, DATA } from "./enum";
 import { ObjectData } from "../services/types";
 import { LocalStorage } from "./helpers/localStorage";
 import "../style/configurator.css";
-import { createRandomData } from "../services/randomDataFactory/createRandom";
 import { updateTablePagination } from "./pagination/tablePagination";
+import { Fetch } from "../services/api/api";
+import { defaultData } from "../static/default";
 
 const inputSearch = document.getElementById("search_field") as HTMLInputElement;
 const formSearch = document.getElementById("search_form") as HTMLFormElement;
 const openConfig = document.getElementById("openConfig") as HTMLButtonElement;
-const dateInputFrom = document.getElementById("dateStart") as HTMLInputElement;
-const dateInputTo = document.getElementById("dateEnd") as HTMLInputElement;
+const dateAddedButton = document.getElementById(
+  "dateAddedButton"
+) as HTMLButtonElement;
+const dataRangePicker = document.getElementById(
+  "dataRangePicker"
+) as HTMLButtonElement;
 
 const filterTableByInput = (searchString: string) => {
   if (!searchString.length) {
     return replaceTable(
       createUITable(
-        LocalStorage.get(Table.tempData) || LocalStorage.get(Table.data)
+        LocalStorage.get(DATA.TEMP_DATA) || LocalStorage.get(DATA.UNIQUE_DATA)
       )
     );
   }
 
   const storageData =
-    LocalStorage.get(Table.tempData) || LocalStorage.get(Table.data);
+    LocalStorage.get(DATA.TEMP_DATA) || LocalStorage.get(DATA.UNIQUE_DATA);
 
   const newData = storageData.filter((obj: ObjectData) => {
     for (const key in obj) {
@@ -40,6 +41,24 @@ const filterTableByInput = (searchString: string) => {
   newData.length
     ? replaceTable(createUITable(newData))
     : alert("No data found");
+};
+
+const saveNewData = async (path: string) => {
+  try {
+    const URL = `${SERVER.URL}/${path}`;
+
+    const responseFromServer = await Fetch.get(URL);
+
+    LocalStorage.set(DATA.UNIQUE_DATA, responseFromServer);
+    LocalStorage.set(DATA.TEMP_DATA, responseFromServer);
+  } catch (error: any) {
+    LocalStorage.set(DATA.UNIQUE_DATA, defaultData);
+    LocalStorage.set(DATA.TEMP_DATA, defaultData);
+
+    alert(
+      `SOMETHING WENT WRONG. STATUS CODE: ${error.response.status}. ENJOY OUR DEFAULT DATA`
+    );
+  }
 };
 
 formSearch.addEventListener("submit", (e) => {
@@ -54,85 +73,26 @@ openConfig.addEventListener("click", (e) => {
   config.style.display = "grid";
 });
 
-const convertDateToString = (date: Date) => {
-  const month =
-    date.getUTCMonth() + 1 < 10
-      ? `0${date.getUTCMonth() + 1}`
-      : date.getUTCMonth() + 1;
-  const day =
-    date.getUTCDate() < 10 ? `0${date.getUTCDate()}` : date.getUTCDate();
-  const year =
-    date.getUTCFullYear() < 10
-      ? `0${date.getUTCFullYear()}`
-      : date.getUTCFullYear();
-
-  return `${month}-${day}-${year}`;
-};
-
-const filterTableByRangeDate = (minDate: string, maxDate: string) => {
-  const storageData =
-    LocalStorage.get(Table.tempData) || LocalStorage.get(Table.data);
-
-  const newData = storageData.filter((obj: ObjectData) => {
-    const isInRange =
-      obj[DataCreationDate.hidden] > minDate &&
-      maxDate > obj[DataCreationDate.hidden];
-    if (obj[DataCreationDate.hidden] && isInRange) return obj;
-  });
-
-  newData.length
-    ? replaceTable(createUITable(newData))
-    : alert("No data found");
-};
-
-const minDate = new Date("01.01.2020").toISOString().split("T")[0];
-const maxDate = new Date().toISOString().split("T")[0];
-
-dateInputFrom.min = minDate;
-dateInputFrom.max = maxDate;
-dateInputTo.min = minDate;
-dateInputTo.max = maxDate;
-
-dateInputFrom.addEventListener("change", (e: any) => {
-  if (!dateInputTo.value) return;
-
-  const dateFrom = convertDateToString(new Date(e.target.value));
-  const dateTo = convertDateToString(new Date(dateInputTo.value));
-
-  dateTo > dateFrom && filterTableByRangeDate(dateFrom, dateTo);
+dateAddedButton.addEventListener("click", (e) => {
+  dataRangePicker.classList.add("show");
 });
 
-dateInputTo.addEventListener("change", (e: any) => {
-  if (!dateInputFrom.value) return alert("Please select all dates fields");
+const createTableFromData = async () => {
+  const prevPath = LocalStorage.get(STORAGE.prevPath);
 
-  const dateTo = convertDateToString(new Date(e.target.value));
-  const dateFrom = convertDateToString(new Date(dateInputFrom.value));
-
-  dateFrom && filterTableByRangeDate(dateFrom, dateTo);
-});
-
-const createTableFromData = () => {
-  const prevPath = LocalStorage.get(Storage.prevPath);
   const currentPath = new URL(window.location.toString()).pathname.replace(
     "/",
     ""
   );
 
   if (prevPath !== currentPath) {
-    const obj =
-      RANDOM_DATA[currentPath as keyof typeof RANDOM_DATA] ||
-      Object.values(RANDOM_DATA)[0];
-
-    const newData = createRandomData(obj, 100);
-
-    LocalStorage.set(Table.data, newData);
-    LocalStorage.set(Table.tempData, newData);
-    LocalStorage.set(Storage.prevPath, currentPath);
+    await saveNewData(currentPath);
+    LocalStorage.set(STORAGE.prevPath, currentPath);
   }
 
-  const data = createMetrics("name", LocalStorage.get(Table.data));
+  const metrics = createMetrics("name", LocalStorage.get(DATA.UNIQUE_DATA));
 
-  createPopUpConfigUI(data);
+  createPopUpConfigUI(metrics);
 
   updateTablePagination();
 };

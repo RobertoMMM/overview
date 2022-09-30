@@ -1,7 +1,11 @@
-enum Table {
-  data = "mainData",
-  tempData = "tempData",
-  paginationData = "paginationData",
+enum DATA {
+  UNIQUE_DATA = "UNIQUE_DATA", // UNTOUCHED DATA FETCHED FROM SERVER.
+  TEMP_DATA = "TEMP_DATA", // TEMPORARY DATA FROM CONFIG
+  PAGINATION_DATA = "PAGINATION_DATA", // DATA DIVIDED BY PER PAGE NUMBER
+}
+
+enum TABLE {
+  PARENT = "table_section", // THIS NEEDS TO BE UNIQUE SECTION ELEMENT ID
 }
 
 enum TableConfig {
@@ -14,8 +18,12 @@ enum TableConfig {
   sorting = "sorting",
 }
 
-enum Storage {
-  prevPath = "prevPath",
+enum SERVER {
+  URL = "http://localhost:3000",
 }
 
-export { Table, TableConfig, Storage };
+enum STORAGE {
+  prevPath = "prevPath", // PREVIOUS URL PATHNAME
+}
+
+export { DATA, TableConfig, STORAGE, SERVER };

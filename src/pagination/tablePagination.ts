@@ -1,6 +1,6 @@
 import { ObjectData } from "../../services/types";
 import { createUITable, replaceTable } from "../creatingTable/table";
-import { Table, TableConfig } from "../enum";
+import { DATA, TableConfig } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
 
 const perPageInput = document.getElementById(
@@ -31,8 +31,14 @@ const formatData = (allData: ObjectData[], itemsPerPage: number) => {
   return formattedData;
 };
 
-const updateTablePagination = (perPageItems?: number) => {
-  const data = LocalStorage.get(Table.tempData) || LocalStorage.get(Table.data);
+const updateTablePagination = (
+  perPageItems?: number,
+  allData?: ObjectData[]
+) => {
+  const data =
+    allData ||
+    LocalStorage.get(DATA.TEMP_DATA) ||
+    LocalStorage.get(DATA.UNIQUE_DATA);
 
   const { itemsPerPage } = LocalStorage.get(TableConfig.configObj) || {
     itemsPerPage: 10,
@@ -48,7 +54,7 @@ const updateTablePagination = (perPageItems?: number) => {
   replaceTable(createUITable(formattedData[0] as ObjectData[]));
   // prevButton.disabled = true;
 
-  LocalStorage.set(Table.paginationData, formattedData);
+  LocalStorage.set(DATA.PAGINATION_DATA, formattedData);
 };
 
 const checkCurrentPage = (current: number, action: "prev" | "next") => {
@@ -81,7 +87,7 @@ nextButton?.addEventListener("click", (e) => {
   e.preventDefault();
 
   const maxInputValue = parseInt(currentPageInput.max);
-  const formattedData = LocalStorage.get(Table.paginationData);
+  const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
   const currentPage = parseInt(currentPageInput.value);
 
   const checkedNumberPage =
@@ -97,7 +103,7 @@ nextButton?.addEventListener("click", (e) => {
 prevButton?.addEventListener("click", (e) => {
   e.preventDefault();
 
-  const formattedData = LocalStorage.get(Table.paginationData);
+  const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
   const currentPage = parseInt(currentPageInput.value);
 
   const checkedNumberPage = checkCurrentPage(currentPage, "prev") || 0;
@@ -110,7 +116,7 @@ prevButton?.addEventListener("click", (e) => {
 });
 
 currentPageInput.addEventListener("input", (e: any) => {
-  const formattedData = LocalStorage.get(Table.paginationData);
+  const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
 
   setTimeout(() => {
     if (!e.target.value) return (currentPageInput.value = "0");
