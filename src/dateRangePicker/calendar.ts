@@ -96,6 +96,7 @@ const generateCalendar = (month: number, year: number) => {
 
   for (let i = 0; i <= yearMonthDays[month] + firstDay.getDay() - 1; i++) {
     const dayText = document.createElement("div");
+    dayText.className = 'eachDay'
     const dayValue = i - firstDay.getDay() + 1;
 
     if (i >= firstDay.getDay()) {
@@ -104,6 +105,8 @@ const generateCalendar = (month: number, year: number) => {
 
     dayText.addEventListener("click", () => {
       const date = new Date(dateYear.value, dateMonth.value, dayValue);
+
+      dayText.classList.add('clicked')
 
       dateDaysSelected.push(date);
 
