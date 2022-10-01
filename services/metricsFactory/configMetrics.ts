@@ -1,15 +1,8 @@
 import { createStringArrayHeaders } from "../../src/creatingTable/rows";
 import { ObjectData } from "../types";
-
-interface SortingsOptions {
-  sortAscending: (fieldName: string, data: ObjectData[]) => ObjectData[];
-  sortDescending: (fieldName: string, data: ObjectData[]) => ObjectData[];
-}
-
 interface MetricsArchitecture {
   defaultMetric: string;
   defaultLimit: number;
-  defaultSorting: SortingsOptions;
   fields: string[];
 }
 
@@ -45,12 +38,6 @@ const createMetrics = (
   return {
     defaultMetric: dataName,
     defaultLimit: headers.length,
-    defaultSorting: {
-      sortAscending: (sortingKey: string, dataObject: ObjectData[]) =>
-        sortData(sortingKey, dataObject, "ascending"),
-      sortDescending: (sortingKey: string, dataObject: ObjectData[]) =>
-        sortData(sortingKey, dataObject, "descending"),
-    },
     fields: headers,
   };
 };
