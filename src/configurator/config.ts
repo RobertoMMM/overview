@@ -7,7 +7,7 @@ interface TableConfigurator {
     fieldName: string;
     sortingValue: string;
   };
-  chips: string[];
+  fields: string[];
   checkboxes: string[];
 }
 
@@ -25,9 +25,17 @@ const getCheckedInputsValue = (checkboxes: HTMLUListElement): string[] => {
   return selectedCheckBoxesStrings;
 };
 
-const createTableConfig = (checkedHeaders: string[]) => {
+const createTableConfig = (
+  checkedHeaders: string[],
+  sortingFieldName: string
+) => {
   LocalStorage.set(TableConfig.configObj, {
     itemsPerPage: 25,
+    sortingField: {
+      fieldName: sortingFieldName,
+      sortingValue: "ascending",
+    },
+    fields: checkedHeaders,
     checkboxes: checkedHeaders,
   });
 
@@ -74,15 +82,19 @@ const recreateTableConfig = () => {
     popUp.querySelector(`#${TableConfig.checkboxes}`) as HTMLUListElement
   );
 
-  setTableConfig({
+  const config = {
     itemsPerPage: parseInt(perPageOption),
     sortingField: {
       fieldName: fieldSelected,
       sortingValue: sortingMethod,
     },
-    chips: chips,
+    fields: chips,
     checkboxes: checkboxes,
-  });
+  };
+
+  setTableConfig(config);
+
+  return config;
 };
 
 export {

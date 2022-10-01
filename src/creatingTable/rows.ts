@@ -1,9 +1,9 @@
 import { sortData } from "../../services/metricsFactory/configMetrics";
 import { DataCreationDate } from "../../services/randomDataFactory/dataStructure";
 import { ObjectData } from "../../services/types";
-import { DATA } from "../enum";
+import { DATA, TABLE } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
-import { createUITable, replaceTable } from "./table";
+import { createUITable, replaceContentTable, replaceTable } from "./table";
 
 const createStringArrayHeaders = (objectsArray: ObjectData[]) => {
   const uniqueKeys: string[] = [];
@@ -11,15 +11,16 @@ const createStringArrayHeaders = (objectsArray: ObjectData[]) => {
   for (const obj of objectsArray) {
     for (const key in obj) {
       if (key === DataCreationDate.hidden) break;
-      if (!uniqueKeys.includes(key)) uniqueKeys.push(key);
+      !uniqueKeys.includes(key) && uniqueKeys.push(key);
     }
   }
 
   return uniqueKeys;
 };
-
+3;
 const createHeadersTableRow = (dataObject: ObjectData[]) => {
   const headersRow = document.createElement("tr") as HTMLHeadElement;
+  headersRow.id = TABLE.BODY_HEADERS_ID;
 
   const headersArray = createStringArrayHeaders(dataObject);
 
@@ -28,6 +29,8 @@ const createHeadersTableRow = (dataObject: ObjectData[]) => {
     const headerText = document.createElement("div") as HTMLDivElement;
     const sortingButton = document.createElement("button") as HTMLButtonElement;
     sortingButton.textContent = "<";
+
+    let isAscending = false;
 
     sortingButton.addEventListener("click", (e) => {
       e.preventDefault();
@@ -38,13 +41,16 @@ const createHeadersTableRow = (dataObject: ObjectData[]) => {
       ) as HTMLInputElement;
       const pageInputValue = parseInt(currentPageInput.value) || 0;
 
-      const sortedData = sortData(
-        headers,
-        formattedData[pageInputValue],
-        "ascending"
-      );
+      isAscending
+        ? (sortingButton.textContent = ">")
+        : (sortingButton.textContent = "<");
+      isAscending = !isAscending;
 
-      replaceTable(createUITable(sortedData));
+      const sortedData = isAscending
+        ? sortData(headers, formattedData[pageInputValue], "ascending")
+        : sortData(headers, formattedData[pageInputValue], "descending");
+
+      replaceContentTable(sortedData);
     });
 
     headerText.textContent = headers;
@@ -59,7 +65,6 @@ const createHeadersTableRow = (dataObject: ObjectData[]) => {
 
 const createRowsForTable = (data: ObjectData) => {
   const tableRow = document.createElement("tr") as HTMLTableRowElement;
-  tableRow.setAttribute("id", `${Math.random()}`);
 
   for (const key in data) {
     if (key === DataCreationDate.hidden) break;

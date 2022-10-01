@@ -6,6 +6,8 @@ enum DATA {
 
 enum TABLE {
   PARENT = "table_section", // THIS NEEDS TO BE UNIQUE SECTION ELEMENT ID
+  BODY_HEADERS_ID = "headerID",
+  TABLE_ID = "table_id",
 }
 
 enum TableConfig {
@@ -26,4 +28,4 @@ enum STORAGE {
   prevPath = "prevPath", // PREVIOUS URL PATHNAME
 }
 
-export { DATA, TableConfig, STORAGE, SERVER };
+export { DATA, TableConfig, STORAGE, SERVER, TABLE };

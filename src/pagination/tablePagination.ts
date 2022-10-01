@@ -16,18 +16,20 @@ const nextButton = document.getElementById("nextPage") as HTMLButtonElement;
 const formatData = (allData: ObjectData[], itemsPerPage: number) => {
   const formattedData: ObjectData = {};
 
-  let counter = 1;
-  let i = 0;
-  while (counter <= allData.length) {
+  const loopLength = Math.ceil(allData.length / itemsPerPage);
+
+  let counter = 0;
+
+  for (let i = 0; i < loopLength; i++) {
     const endSlice =
-      counter + itemsPerPage - 1 > allData.length
-        ? allData.length - 1
-        : counter + itemsPerPage - 1;
-    const data = allData.slice(counter - 1, endSlice);
+      counter + itemsPerPage > allData.length
+        ? allData.length
+        : counter + itemsPerPage;
+    const data = allData.slice(counter, endSlice);
     formattedData[i] = data;
     counter += itemsPerPage;
-    i++;
   }
+
   return formattedData;
 };
 
@@ -52,7 +54,8 @@ const updateTablePagination = (
   currentPageInput.max = formattedDataLength.toString();
 
   replaceTable(createUITable(formattedData[0] as ObjectData[]));
-  // prevButton.disabled = true;
+  prevButton.disabled = false;
+  nextButton.disabled = false;
 
   LocalStorage.set(DATA.PAGINATION_DATA, formattedData);
 };
@@ -61,26 +64,26 @@ const checkCurrentPage = (current: number, action: "prev" | "next") => {
   if (typeof current !== "number") return;
 
   const maxInputValue = parseInt(currentPageInput.max);
-  const formattedDataLength: number = maxInputValue;
 
-  const isLessThanDataLength = current < formattedDataLength;
+  const isLessThanDataLength = current < maxInputValue;
   const isPossitive = current > 0;
 
-  // if (!isLessThanDataLength) {
-  //   nextButton.disabled = true;
-  // }
+  if (!isLessThanDataLength) {
+    nextButton.disabled = true;
+  }
 
-  // if (!isPossitive) {
-  //   prevButton.disabled = true;
-  // }
+  if (!isPossitive) {
+    prevButton.disabled = true;
+  }
 
-  // if (current < formattedDataLength && isPossitive) {
-  //   nextButton.disabled = false;
-  //   prevButton.disabled = false;
-  // }
-
-  if (isLessThanDataLength && action === "next") return current + 1;
-  if (isPossitive && action === "prev") return current - 1;
+  if (isLessThanDataLength && action === "next") {
+    prevButton.disabled = false;
+    return current + 1;
+  }
+  if (isPossitive && action === "prev") {
+    nextButton.disabled = false;
+    return current - 1;
+  }
 };
 
 nextButton?.addEventListener("click", (e) => {
@@ -118,18 +121,29 @@ prevButton?.addEventListener("click", (e) => {
 currentPageInput.addEventListener("input", (e: any) => {
   const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
 
-  setTimeout(() => {
-    if (!e.target.value) return (currentPageInput.value = "0");
-    const userNumber = parseInt(currentPageInput.value);
-    replaceTable(createUITable(formattedData[userNumber]));
-  }, 300);
+  const checkInput = () => {
+    const maxInputValue = parseInt(currentPageInput.max);
+
+    if (e.target.value <= maxInputValue) {
+      const userNumber = parseInt(currentPageInput.value);
+
+      replaceTable(createUITable(formattedData[userNumber]));
+    }
+  };
+
+  setTimeout(checkInput, 400);
 });
 
 perPageInput.addEventListener("input", (e: any) => {
-  if (!e.target.value) return (perPageInput.value = "0");
-  const userNumber = parseInt(perPageInput.value);
+  const checkInput = () => {
+    if (e.target.value) {
+      const userNumber = parseInt(perPageInput.value);
 
-  updateTablePagination(userNumber);
+      updateTablePagination(userNumber);
+    }
+  };
+
+  setTimeout(checkInput, 400);
 });
 
 export { updateTablePagination };

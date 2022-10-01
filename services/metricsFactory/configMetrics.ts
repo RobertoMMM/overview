@@ -55,4 +55,4 @@ const createMetrics = (
   };
 };
 
-export { createMetrics, MetricsArchitecture, sortData };
+export { createMetrics, MetricsArchitecture, sortData, OrderSorting };

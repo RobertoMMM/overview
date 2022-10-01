@@ -1,13 +1,14 @@
 import { createUITable, replaceTable } from "./creatingTable/table";
 import { createPopUpConfigUI } from "./configurator/creatingUI";
 import { createMetrics } from "../services/metricsFactory/configMetrics";
-import { SERVER, STORAGE, DATA } from "./enum";
+import { SERVER, STORAGE, DATA, TableConfig } from "./enum";
 import { ObjectData } from "../services/types";
 import { LocalStorage } from "./helpers/localStorage";
 import "../style/configurator.css";
 import { updateTablePagination } from "./pagination/tablePagination";
 import { Fetch } from "../services/api/api";
 import { defaultData } from "../static/default";
+import { createTableConfig } from "./configurator/config";
 
 const inputSearch = document.getElementById("search_field") as HTMLInputElement;
 const formSearch = document.getElementById("search_form") as HTMLFormElement;
@@ -18,6 +19,25 @@ const dateAddedButton = document.getElementById(
 const dataRangePicker = document.getElementById(
   "dataRangePicker"
 ) as HTMLButtonElement;
+const config = document.getElementById("popUp") as HTMLDivElement;
+
+const saveNewData = async (path: string) => {
+  try {
+    const URL = `${SERVER.URL}/${path}`;
+
+    const responseFromServer = await Fetch.get(URL);
+
+    LocalStorage.set(DATA.UNIQUE_DATA, responseFromServer);
+    LocalStorage.set(DATA.TEMP_DATA, responseFromServer);
+  } catch (error: any) {
+    LocalStorage.set(DATA.UNIQUE_DATA, defaultData);
+    LocalStorage.set(DATA.TEMP_DATA, defaultData);
+
+    alert(
+      `SOMETHING WENT WRONG. STATUS CODE: ${error.response.status}. ENJOY OUR DEFAULT DATA`
+    );
+  }
+};
 
 const filterTableByInput = (searchString: string) => {
   if (!searchString.length) {
@@ -43,37 +63,17 @@ const filterTableByInput = (searchString: string) => {
     : alert("No data found");
 };
 
-const saveNewData = async (path: string) => {
-  try {
-    const URL = `${SERVER.URL}/${path}`;
-
-    const responseFromServer = await Fetch.get(URL);
-
-    LocalStorage.set(DATA.UNIQUE_DATA, responseFromServer);
-    LocalStorage.set(DATA.TEMP_DATA, responseFromServer);
-  } catch (error: any) {
-    LocalStorage.set(DATA.UNIQUE_DATA, defaultData);
-    LocalStorage.set(DATA.TEMP_DATA, defaultData);
-
-    alert(
-      `SOMETHING WENT WRONG. STATUS CODE: ${error.response.status}. ENJOY OUR DEFAULT DATA`
-    );
-  }
-};
-
 formSearch.addEventListener("submit", (e) => {
   e.preventDefault();
 
   filterTableByInput(inputSearch.value);
 });
 
-openConfig.addEventListener("click", (e) => {
-  const config = document.getElementById("popUp") as HTMLDivElement;
-
+openConfig.addEventListener("click", () => {
   config.style.display = "grid";
 });
 
-dateAddedButton.addEventListener("click", (e) => {
+dateAddedButton.addEventListener("click", () => {
   dataRangePicker.classList.add("show");
 });
 
@@ -91,6 +91,11 @@ const createTableFromData = async () => {
   }
 
   const metrics = createMetrics("name", LocalStorage.get(DATA.UNIQUE_DATA));
+
+  const { fields } = metrics;
+
+  !LocalStorage.get(TableConfig.configObj) &&
+    createTableConfig(fields, fields[0]);
 
   createPopUpConfigUI(metrics);
 

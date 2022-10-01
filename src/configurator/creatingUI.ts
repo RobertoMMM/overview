@@ -1,5 +1,6 @@
 import {
   MetricsArchitecture,
+  OrderSorting,
   sortData,
 } from "../../services/metricsFactory/configMetrics";
 import { DataCreationDate } from "../../services/randomDataFactory/dataStructure";
@@ -66,11 +67,12 @@ const appendUpdatedChips = (fields: string[], parent: HTMLUListElement) => {
     const stringDraggedChilds = draggedChip.innerHTML;
     const stringTargetChilds = targetChip.innerHTML;
 
-    if (
+    const checking =
       parent.contains(draggedChip) &&
       parent.contains(targetChip) &&
-      parent !== targetChip
-    ) {
+      parent !== targetChip;
+
+    if (checking) {
       draggedChip.innerHTML = stringTargetChilds;
       targetChip.innerHTML = stringDraggedChilds;
     }
@@ -138,17 +140,17 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
   const createNewDataFromConfig = () => {
     const allData = LocalStorage.get(DATA.UNIQUE_DATA);
     const newData: ObjectData[] = [];
-    const tableConfig = LocalStorage.get(TableConfig.configObj);
+    const tableConfig = recreateTableConfig();
 
-    const { chips, sortingField } = tableConfig;
+    const { fields, sortingField } = tableConfig;
     const { fieldName, sortingValue } = sortingField;
 
-    chips.push(DataCreationDate.hidden);
+    fields.push(DataCreationDate.hidden);
 
     for (const obj of allData) {
       const temp: ObjectData = {};
       for (const key in obj) {
-        for (const headers of chips) {
+        for (const headers of fields) {
           if (obj[headers]) {
             temp[headers] = obj[headers];
           }
@@ -157,7 +159,11 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
       newData.push(temp);
     }
 
-    const sortedData = sortData(fieldName, newData, sortingValue);
+    const sortedData = sortData(
+      fieldName,
+      newData,
+      sortingValue as OrderSorting
+    );
 
     LocalStorage.set(DATA.TEMP_DATA, sortedData);
 
