@@ -3,7 +3,7 @@ import { DataCreationDate } from "../../services/randomDataFactory/dataStructure
 import { ObjectData } from "../../services/types";
 import { DATA, TABLE } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
-import { createUITable, replaceContentTable, replaceTable } from "./table";
+import { replaceContentTable } from "./table";
 
 const createStringArrayHeaders = (objectsArray: ObjectData[]) => {
   const uniqueKeys: string[] = [];

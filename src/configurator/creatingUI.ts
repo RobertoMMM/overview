@@ -6,7 +6,7 @@ import {
 import { DataCreationDate } from "../../services/randomDataFactory/dataStructure";
 import { ObjectData } from "../../services/types";
 import "../../style/configurator.css";
-import { DATA, TableConfig } from "../enum";
+import { DATA } from "../enum";
 import { LocalStorage } from "../helpers/localStorage";
 import { updateTablePagination } from "../pagination/tablePagination";
 import { getCheckedInputsValue, recreateTableConfig } from "./config";
@@ -132,58 +132,43 @@ const appendUpdatedCheckboxes = (
   }
 };
 
-const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
-  popUp.style.display = "none";
+const closeConfig = () => (popUp.style.display = "none");
 
-  const closeConfig = () => (popUp.style.display = "none");
+const createNewDataFromConfig = () => {
+  const allData = LocalStorage.get(DATA.UNIQUE_DATA);
+  const newData: ObjectData[] = [];
+  const tableConfig = recreateTableConfig();
 
-  const createNewDataFromConfig = () => {
-    const allData = LocalStorage.get(DATA.UNIQUE_DATA);
-    const newData: ObjectData[] = [];
-    const tableConfig = recreateTableConfig();
+  const { fields, sortingField } = tableConfig;
+  const { fieldName, sortingValue } = sortingField;
 
-    const { fields, sortingField } = tableConfig;
-    const { fieldName, sortingValue } = sortingField;
+  fields.push(DataCreationDate.hidden);
 
-    fields.push(DataCreationDate.hidden);
-
-    for (const obj of allData) {
-      const temp: ObjectData = {};
-      for (const key in obj) {
-        for (const headers of fields) {
-          if (obj[headers]) {
-            temp[headers] = obj[headers];
-          }
+  for (const obj of allData) {
+    const temp: ObjectData = {};
+    for (const key in obj) {
+      for (const headers of fields) {
+        if (obj[headers]) {
+          temp[headers] = obj[headers];
         }
       }
-      newData.push(temp);
     }
+    newData.push(temp);
+  }
 
-    const sortedData = sortData(
-      fieldName,
-      newData,
-      sortingValue as OrderSorting
-    );
+  const sortedData = sortData(
+    fieldName,
+    newData,
+    sortingValue as OrderSorting
+  );
 
-    LocalStorage.set(DATA.TEMP_DATA, sortedData);
+  LocalStorage.set(DATA.TEMP_DATA, sortedData);
 
-    updateTablePagination();
-  };
+  updateTablePagination();
+};
 
-  cancelButton?.addEventListener("click", (e) => {
-    e.preventDefault();
-    closeConfig();
-  });
-
-  closeButton?.addEventListener("click", (e) => {
-    e.preventDefault();
-    closeConfig();
-  });
-
-  saveButton?.addEventListener("click", (e) => {
-    e.preventDefault();
-    createNewDataFromConfig();
-  });
+const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
+  popUp.style.display = "none";
 
   const { fields } = metrics;
 
@@ -196,5 +181,20 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
   appendUpdatedSelect([10, 25, 50, 100], selectPerPage);
   appendUpdatedSelect(["ascending", "descending"], sortingValue);
 };
+
+cancelButton?.addEventListener("click", (e) => {
+  e.preventDefault();
+  closeConfig();
+});
+
+closeButton?.addEventListener("click", (e) => {
+  e.preventDefault();
+  closeConfig();
+});
+
+saveButton?.addEventListener("click", (e) => {
+  e.preventDefault();
+  createNewDataFromConfig();
+});
 
 export { createPopUpConfigUI };
