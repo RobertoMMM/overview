@@ -29,7 +29,7 @@ const checkboxesList = document.getElementById(
 const chipsList = document.getElementById("chipsClassName") as HTMLUListElement;
 const popUp = document.getElementById("popUp") as HTMLFormElement;
 
-const addClickEvent = (parent: HTMLElement, event: () => void) => {
+const addClickEventToParent = (parent: HTMLElement, event: () => void) => {
   parent.addEventListener("click", (e) => {
     e.target?.addEventListener("click", event);
   });
@@ -94,7 +94,7 @@ const appendUpdatedSelect = <T>(items: T[], parent: HTMLSelectElement) => {
     parent.appendChild(optionItem);
   }
 
-  addClickEvent(parent, () => {
+  addClickEventToParent(parent, () => {
     recreateTableConfig();
   });
 };
@@ -156,11 +156,7 @@ const createNewDataFromConfig = () => {
     newData.push(temp);
   }
 
-  const sortedData = sortData(
-    fieldName,
-    newData,
-    sortingValue as OrderSorting
-  );
+  const sortedData = sortData(fieldName, newData, sortingValue as OrderSorting);
 
   LocalStorage.set(DATA.TEMP_DATA, sortedData);
 

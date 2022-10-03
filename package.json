@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "@easepick/bundle": "^1.2.0",
+    "@easepick/lock-plugin": "^1.2.0",
+    "@easepick/range-plugin": "^1.2.0",
     "@types/cors": "^2.8.12",
     "axios": "^0.27.2",
     "cors": "^2.8.5",

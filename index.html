@@ -13,9 +13,9 @@
 
   <body>
     <!-- popUp start -->
-    <form id="popUp">
+    <form id="popUp" class="popUp">
       <span class="mainText">Table Configuration</span>
-      <button id="closeConfig">Close</button>
+      <button id="closeConfig" class="closeConfig">Close</button>
       <div class="perPage">
         <label>Items per page</label>
         <select id="selectPerPage"></select>
@@ -28,21 +28,28 @@
         <label>Sorting value</label>
         <select id="sorting"></select>
       </div>
-      <ul id="chipsClassName"></ul>
-      <ul id="checkboxes"></ul>
+      <ul id="chipsClassName" class="chipsClassName"></ul>
+      <ul id="checkboxes" class="checkboxes"></ul>
       <div id="buttonPlace">
-        <button id="configCancelButton">Cancel</button>
-        <button id="configSaveButton">Save</button>
+        <button id="configCancelButton" class="configCancelButton">
+          Cancel
+        </button>
+        <button id="configSaveButton" class="configSaveButton">Save</button>
       </div>
     </form>
     <!-- popUp end -->
     <!-- search form start -->
-    <form id="search_form">
+    <form id="searchForm" class="searchForm">
       <input id="search_field" placeholder="Look for a specific data" />
-      <button type="button" id="dateAddedButton">Filter by added date</button>
     </form>
     <!-- search form end -->
-    <button id="openConfig">Open Config</button>
+    <!-- dateRange start -->
+    <form id="rangeForm" class="rangeForm">
+      <input id="range" type="text" placeholder="yyyy / mm / dd" />
+      <button type="submit">Search</button>
+    </form>
+    <!-- dateRange end -->
+    <button id="openConfig" class="openConfig">Open Config</button>
     <section id="table_section"></section>
     <!-- table pagination start -->
     <form class="tablePagination">
@@ -60,36 +67,8 @@
       </span>
     </form>
     <!-- table pagination end -->
-    <!-- calendar start -->
-    <div class="dataRangePicker" id="dataRangePicker">
-      <div class="pickerHeader" id="pickerHeader">
-        <span class="monthPicker" id="monthPicker"> February </span>
-        <div class="yearPicker">
-          <span class="yearChangeButton" id="yearPrevButton">
-            <pre><</pre>
-          </span>
-          <span id="year">2021</span>
-          <span class="yearChangeButton" id="yearNextButton">
-            <pre>></pre>
-          </span>
-        </div>
-      </div>
-      <div class="pickerBody" id="pickerBody">
-        <div class="weekDays">
-          <div>Sun</div>
-          <div>Mon</div>
-          <div>Tue</div>
-          <div>Wed</div>
-          <div>Thu</div>
-          <div>Fri</div>
-          <div>Sat</div>
-        </div>
-        <div class="days" id="days"></div>
-      </div>
-      <div class="monthsList" id="monthsList"></div>
-    </div>
-    <!-- calendar end -->
     <script type="module" src="./src/index.ts"></script>
-    <script type="module" src="./src/dateRangePicker/calendar.ts"></script>
+    <script type="module" src="./src/dateRangePicker/dateRange.ts"></script>
+    <script type="module" src="./src/searchUser/search.ts"></script>
   </body>
 </html>

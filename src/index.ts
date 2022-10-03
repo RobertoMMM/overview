@@ -1,8 +1,6 @@
-import { createUITable, replaceTable } from "./creatingTable/table";
 import { createPopUpConfigUI } from "./configurator/creatingUI";
 import { createMetrics } from "../services/metricsFactory/configMetrics";
 import { SERVER, STORAGE, DATA, TableConfig } from "./enum";
-import { ObjectData } from "../services/types";
 import { LocalStorage } from "./helpers/localStorage";
 import "../style/configurator.css";
 import { updateTablePagination } from "./pagination/tablePagination";
@@ -10,15 +8,7 @@ import { Fetch } from "../services/api/api";
 import { defaultData } from "../static/default";
 import { createTableConfig } from "./configurator/config";
 
-const inputSearch = document.getElementById("search_field") as HTMLInputElement;
-const formSearch = document.getElementById("search_form") as HTMLFormElement;
 const openConfig = document.getElementById("openConfig") as HTMLButtonElement;
-const dateAddedButton = document.getElementById(
-  "dateAddedButton"
-) as HTMLButtonElement;
-const dataRangePicker = document.getElementById(
-  "dataRangePicker"
-) as HTMLButtonElement;
 const config = document.getElementById("popUp") as HTMLDivElement;
 
 const saveNewData = async (path: string) => {
@@ -39,42 +29,8 @@ const saveNewData = async (path: string) => {
   }
 };
 
-const filterTableByInput = (searchString: string) => {
-  if (!searchString.length) {
-    return replaceTable(
-      createUITable(
-        LocalStorage.get(DATA.TEMP_DATA) || LocalStorage.get(DATA.UNIQUE_DATA)
-      )
-    );
-  }
-
-  const storageData =
-    LocalStorage.get(DATA.TEMP_DATA) || LocalStorage.get(DATA.UNIQUE_DATA);
-
-  const newData = storageData.filter((obj: ObjectData) => {
-    for (const key in obj) {
-      const value = obj[key as keyof typeof obj].toString();
-      if (value.toLowerCase().includes(searchString.toLowerCase())) return obj;
-    }
-  });
-
-  newData.length
-    ? replaceTable(createUITable(newData))
-    : alert("No data found");
-};
-
-formSearch.addEventListener("submit", (e) => {
-  e.preventDefault();
-
-  filterTableByInput(inputSearch.value);
-});
-
 openConfig.addEventListener("click", () => {
   config.style.display = "grid";
-});
-
-dateAddedButton.addEventListener("click", () => {
-  dataRangePicker.classList.add("show");
 });
 
 const createTableFromData = async () => {
