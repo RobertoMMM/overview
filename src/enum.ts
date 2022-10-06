@@ -6,8 +6,9 @@ enum DATA {
 
 enum TABLE {
   PARENT = "table_section", // THIS NEEDS TO BE UNIQUE SECTION ELEMENT ID
-  BODY_HEADERS_ID = "headerID",
+  HEADER_ROW_ID = "headerID",
   TABLE_ID = "table_id",
+  SORTING_BUTTON_CLASS = "sortButton"
 }
 
 enum TableConfig {

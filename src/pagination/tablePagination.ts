@@ -13,6 +13,9 @@ const currentPageInput = document.getElementById(
 const prevButton = document.getElementById("prevPage") as HTMLButtonElement;
 const nextButton = document.getElementById("nextPage") as HTMLButtonElement;
 
+const MIN_CURRENT_PAGE = 1;
+const DELAY_SECONDS = 400;
+
 const formatData = (allData: ObjectData[], itemsPerPage: number) => {
   const formattedData: ObjectData = {};
 
@@ -20,11 +23,14 @@ const formatData = (allData: ObjectData[], itemsPerPage: number) => {
 
   let counter = 0;
 
-  for (let i = 0; i < loopLength; i++) {
+  for (let i = 1; i <= loopLength; i++) {
+    const isMoreThanData = counter + itemsPerPage > allData.length 
+
     const endSlice =
-      counter + itemsPerPage > allData.length
+      isMoreThanData
         ? allData.length
         : counter + itemsPerPage;
+
     const data = allData.slice(counter, endSlice);
     formattedData[i] = data;
     counter += itemsPerPage;
@@ -34,7 +40,7 @@ const formatData = (allData: ObjectData[], itemsPerPage: number) => {
 };
 
 const updateTablePagination = (
-  perPageItems?: number,
+  itemsPerPageParameter?: number,
   allData?: ObjectData[]
 ) => {
   const data =
@@ -46,16 +52,20 @@ const updateTablePagination = (
     itemsPerPage: 10,
   };
 
-  const perPage = perPageItems || itemsPerPage;
+  const perPage = itemsPerPageParameter || itemsPerPage;
 
   const formattedData = formatData(data, perPage);
-  const formattedDataLength = Object.keys(formattedData).length - 1;
+  const formattedDataLength = Object.keys(formattedData).length;
 
   currentPageInput.max = formattedDataLength.toString();
+  currentPageInput.value = MIN_CURRENT_PAGE.toString();
 
-  replaceTable(createUITable(formattedData[0] as ObjectData[]));
-  prevButton.disabled = false;
-  nextButton.disabled = false;
+  perPageInput.value = perPage.toString();
+
+  replaceTable(createUITable(formattedData[MIN_CURRENT_PAGE] as ObjectData[]));
+
+  prevButton.disabled = parseInt(currentPageInput.value) <= MIN_CURRENT_PAGE;
+  nextButton.disabled = parseInt(currentPageInput.value) >= formattedDataLength;
 
   LocalStorage.set(DATA.PAGINATION_DATA, formattedData);
 };
@@ -66,22 +76,21 @@ const checkCurrentPage = (current: number, action: "prev" | "next") => {
   const maxInputValue = parseInt(currentPageInput.max);
 
   const isLessThanDataLength = current < maxInputValue;
-  const isPossitive = current > 0;
-
-  if (!isLessThanDataLength) {
-    nextButton.disabled = true;
-  }
-
-  if (!isPossitive) {
-    prevButton.disabled = true;
-  }
+  const isPossitive = current > MIN_CURRENT_PAGE;
 
   if (isLessThanDataLength && action === "next") {
     prevButton.disabled = false;
+
+    nextButton.disabled = !(current < maxInputValue - 1);
+
     return current + 1;
   }
+
   if (isPossitive && action === "prev") {
     nextButton.disabled = false;
+
+    prevButton.disabled = current < MIN_CURRENT_PAGE + 2;
+
     return current - 1;
   }
 };
@@ -109,7 +118,8 @@ prevButton?.addEventListener("click", (e) => {
   const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
   const currentPage = parseInt(currentPageInput.value);
 
-  const checkedNumberPage = checkCurrentPage(currentPage, "prev") || 0;
+  const checkedNumberPage =
+    checkCurrentPage(currentPage, "prev") || MIN_CURRENT_PAGE;
 
   currentPageInput.value = checkedNumberPage.toString();
 
@@ -124,26 +134,26 @@ currentPageInput.addEventListener("input", (e: any) => {
   const checkInput = () => {
     const maxInputValue = parseInt(currentPageInput.max);
 
-    if (e.target.value <= maxInputValue) {
+    if (e.target.value <= maxInputValue && e.target.value >= MIN_CURRENT_PAGE) {
       const userNumber = parseInt(currentPageInput.value);
 
       replaceTable(createUITable(formattedData[userNumber]));
     }
   };
 
-  setTimeout(checkInput, 400);
+  setTimeout(checkInput, DELAY_SECONDS);
 });
 
 perPageInput.addEventListener("input", (e: any) => {
   const checkInput = () => {
-    if (e.target.value) {
+    if (e.target.value > MIN_CURRENT_PAGE - 1) {
       const userNumber = parseInt(perPageInput.value);
 
       updateTablePagination(userNumber);
     }
   };
 
-  setTimeout(checkInput, 400);
+  setTimeout(checkInput, DELAY_SECONDS);
 });
 
 export { updateTablePagination };

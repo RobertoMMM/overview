@@ -15,6 +15,7 @@ const getCheckedInputsValue = (checkboxes: HTMLUListElement): string[] => {
   const inputs = checkboxes.getElementsByTagName("input");
 
   const selectedCheckBoxesStrings: string[] = [];
+  
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].checked) {
       const valueOfLiText = inputs[i].parentElement?.firstChild?.textContent;
@@ -46,6 +47,7 @@ const getChips = (chips: HTMLUListElement) => {
   const actualChips: string[] = [];
 
   const liElements = chips.getElementsByTagName("li");
+
   for (let i = 0; i < liElements.length; i++) {
     actualChips.push(liElements[i].textContent as string);
   }

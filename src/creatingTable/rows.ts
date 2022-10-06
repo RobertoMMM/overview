@@ -17,10 +17,28 @@ const createStringArrayHeaders = (objectsArray: ObjectData[]) => {
 
   return uniqueKeys;
 };
-3;
+
+const getSortedData = (
+  sortingKey: string,
+  method: "ascending" | "descending"
+) => {
+  const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
+  const currentPageInput = document.getElementById(
+    "currentPage"
+  ) as HTMLInputElement;
+  const pageInputValue = parseInt(currentPageInput.value) || 0;
+
+  const sortedData =
+    method === "ascending"
+      ? sortData(sortingKey, formattedData[pageInputValue], "ascending")
+      : sortData(sortingKey, formattedData[pageInputValue], "descending");
+
+  return sortedData;
+};
+
 const createHeadersTableRow = (dataObject: ObjectData[]) => {
   const headersRow = document.createElement("tr") as HTMLHeadElement;
-  headersRow.id = TABLE.BODY_HEADERS_ID;
+  headersRow.id = TABLE.HEADER_ROW_ID;
 
   const headersArray = createStringArrayHeaders(dataObject);
 
@@ -28,28 +46,40 @@ const createHeadersTableRow = (dataObject: ObjectData[]) => {
     const header = document.createElement("td") as HTMLHeadElement;
     const headerText = document.createElement("div") as HTMLDivElement;
     const sortingButton = document.createElement("button") as HTMLButtonElement;
-    sortingButton.textContent = "<";
 
-    let isAscending = false;
+    sortingButton.textContent = "<";
+    sortingButton.className = TABLE.SORTING_BUTTON_CLASS;
+
+    let isAscending = true;
+
+    headerText.addEventListener("click", () => {
+      const rowFields = headersRow.getElementsByTagName("td");
+
+      for (let i = 0; i < headersArray.length; i++) {
+        const button = rowFields[i].getElementsByTagName("button")[0] as HTMLButtonElement;
+
+        button && button.classList.remove("show");
+      }
+
+      const sortedData = getSortedData(headers, "ascending");
+      replaceContentTable(sortedData);
+
+      header.appendChild(sortingButton);
+      sortingButton.classList.add("show");
+    });
 
     sortingButton.addEventListener("click", (e) => {
       e.preventDefault();
 
-      const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
-      const currentPageInput = document.getElementById(
-        "currentPage"
-      ) as HTMLInputElement;
-      const pageInputValue = parseInt(currentPageInput.value) || 0;
-
       isAscending
         ? (sortingButton.textContent = ">")
         : (sortingButton.textContent = "<");
+
+      const sortingMethod = isAscending ? "descending" : "ascending";
+
       isAscending = !isAscending;
 
-      const sortedData = isAscending
-        ? sortData(headers, formattedData[pageInputValue], "ascending")
-        : sortData(headers, formattedData[pageInputValue], "descending");
-
+      const sortedData = getSortedData(headers, sortingMethod);
       replaceContentTable(sortedData);
     });
 

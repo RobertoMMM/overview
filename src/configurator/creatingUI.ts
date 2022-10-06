@@ -29,6 +29,8 @@ const checkboxesList = document.getElementById(
 const chipsList = document.getElementById("chipsClassName") as HTMLUListElement;
 const popUp = document.getElementById("popUp") as HTMLFormElement;
 
+const OPTIONS_PER_PAGE = [10, 25, 50, 100];
+
 const addClickEventToParent = (parent: HTMLElement, event: () => void) => {
   parent.addEventListener("click", (e) => {
     e.target?.addEventListener("click", event);
@@ -144,6 +146,7 @@ const createNewDataFromConfig = () => {
 
   fields.push(DataCreationDate.hidden);
 
+  // ALGORITHM TO SORT DATA. TIME COMPLEXITY IS O(n2 log n)
   for (const obj of allData) {
     const temp: ObjectData = {};
     for (const key in obj) {
@@ -174,7 +177,7 @@ const createPopUpConfigUI = (metrics: MetricsArchitecture) => {
   appendUpdatedChips(checkedHeaders, chipsList);
 
   appendUpdatedSelect(checkedHeaders, fieldName);
-  appendUpdatedSelect([10, 25, 50, 100], selectPerPage);
+  appendUpdatedSelect(OPTIONS_PER_PAGE, selectPerPage);
   appendUpdatedSelect(["ascending", "descending"], sortingValue);
 };
 

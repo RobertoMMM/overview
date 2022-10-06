@@ -41,6 +41,7 @@ button {
 
 .searchForm {
   position: relative;
+  top: 4px;
 }
 
 .rangeForm {
