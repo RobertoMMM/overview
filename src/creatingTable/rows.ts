@@ -1,4 +1,7 @@
-import { sortData } from "../../services/metricsFactory/configMetrics";
+import {
+  OrderSorting,
+  sortData,
+} from "../../services/metricsFactory/configMetrics";
 import { DataCreationDate } from "../../services/randomDataFactory/dataStructure";
 import { ObjectData } from "../../services/types";
 import { DATA, TABLE } from "../enum";
@@ -18,10 +21,7 @@ const createStringArrayHeaders = (objectsArray: ObjectData[]) => {
   return uniqueKeys;
 };
 
-const getSortedData = (
-  sortingKey: string,
-  method: "ascending" | "descending"
-) => {
+const getSortedData = (sortingKey: string, method: OrderSorting) => {
   const formattedData = LocalStorage.get(DATA.PAGINATION_DATA);
   const currentPageInput = document.getElementById(
     "currentPage"
@@ -56,7 +56,9 @@ const createHeadersTableRow = (dataObject: ObjectData[]) => {
       const rowFields = headersRow.getElementsByTagName("td");
 
       for (let i = 0; i < headersArray.length; i++) {
-        const button = rowFields[i].getElementsByTagName("button")[0] as HTMLButtonElement;
+        const button = rowFields[i].getElementsByTagName(
+          "button"
+        )[0] as HTMLButtonElement;
 
         button && button.classList.remove("show");
       }

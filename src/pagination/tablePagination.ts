@@ -24,12 +24,9 @@ const formatData = (allData: ObjectData[], itemsPerPage: number) => {
   let counter = 0;
 
   for (let i = 1; i <= loopLength; i++) {
-    const isMoreThanData = counter + itemsPerPage > allData.length 
+    const isMoreThanData = counter + itemsPerPage > allData.length;
 
-    const endSlice =
-      isMoreThanData
-        ? allData.length
-        : counter + itemsPerPage;
+    const endSlice = isMoreThanData ? allData.length : counter + itemsPerPage;
 
     const data = allData.slice(counter, endSlice);
     formattedData[i] = data;
@@ -39,22 +36,26 @@ const formatData = (allData: ObjectData[], itemsPerPage: number) => {
   return formattedData;
 };
 
-const updateTablePagination = (
-  itemsPerPageParameter?: number,
-  allData?: ObjectData[]
-) => {
-  const data =
-    allData ||
+interface TablePage {
+  itemsPerPage?: number;
+  data?: ObjectData[];
+}
+
+const updateTablePagination = (params?: TablePage) => {
+  const { itemsPerPage, data } = params || {};
+
+  const localStorageData =
+    data ||
     LocalStorage.get(DATA.TEMP_DATA) ||
     LocalStorage.get(DATA.UNIQUE_DATA);
 
-  const { itemsPerPage } = LocalStorage.get(TableConfig.configObj) || {
-    itemsPerPage: 10,
-  };
+  const { itemsPerPage: configItemsPerPage } = LocalStorage.get(
+    TableConfig.configObj
+  );
 
-  const perPage = itemsPerPageParameter || itemsPerPage;
+  const perPage = itemsPerPage || configItemsPerPage;
 
-  const formattedData = formatData(data, perPage);
+  const formattedData = formatData(localStorageData, perPage);
   const formattedDataLength = Object.keys(formattedData).length;
 
   currentPageInput.max = formattedDataLength.toString();
@@ -70,7 +71,9 @@ const updateTablePagination = (
   LocalStorage.set(DATA.PAGINATION_DATA, formattedData);
 };
 
-const checkCurrentPage = (current: number, action: "prev" | "next") => {
+type ButtonActions = "prev" | "next";
+
+const checkCurrentPage = (current: number, action: ButtonActions) => {
   if (typeof current !== "number") return;
 
   const maxInputValue = parseInt(currentPageInput.max);
@@ -149,7 +152,7 @@ perPageInput.addEventListener("input", (e: any) => {
     if (e.target.value > MIN_CURRENT_PAGE - 1) {
       const userNumber = parseInt(perPageInput.value);
 
-      updateTablePagination(userNumber);
+      updateTablePagination({ itemsPerPage: userNumber });
     }
   };
 

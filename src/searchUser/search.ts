@@ -27,7 +27,7 @@ const filterTableByInput = (searchString: string) => {
   });
 
   newData.length
-    ? updateTablePagination(undefined, newData)
+    ? updateTablePagination({ data: newData })
     : alert("No data found");
 };
 

@@ -8,7 +8,7 @@ enum TABLE {
   PARENT = "table_section", // THIS NEEDS TO BE UNIQUE SECTION ELEMENT ID
   HEADER_ROW_ID = "headerID",
   TABLE_ID = "table_id",
-  SORTING_BUTTON_CLASS = "sortButton"
+  SORTING_BUTTON_CLASS = "sortButton",
 }
 
 enum TableConfig {

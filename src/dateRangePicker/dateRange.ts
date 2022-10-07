@@ -23,11 +23,11 @@ const filterTableByRangeDate = (minDate: Date, maxDate: Date) => {
   });
 
   newData.length
-    ? updateTablePagination(newData.length, newData)
+    ? updateTablePagination({ data: newData })
     : alert("No data found");
 };
 
-// condig object for easepick library
+// config object for easepick library
 const configRange = {
   element: inputDate,
   css: ["https://cdn.jsdelivr.net/npm/@easepick/bundle@1.2.0/dist/index.css"],

@@ -15,7 +15,7 @@ const getCheckedInputsValue = (checkboxes: HTMLUListElement): string[] => {
   const inputs = checkboxes.getElementsByTagName("input");
 
   const selectedCheckBoxesStrings: string[] = [];
-  
+
   for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].checked) {
       const valueOfLiText = inputs[i].parentElement?.firstChild?.textContent;
