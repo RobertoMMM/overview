@@ -3,7 +3,7 @@ enum DataCreationDate {
 }
 
 const RANDOM_DATA = {
-  name: [
+  person: [
     {
       key: "name",
       possibleValues: [
