@@ -24,7 +24,7 @@ const saveNewData = async (path: string) => {
     LocalStorage.set(DATA.TEMP_DATA, defaultData);
 
     alert(
-      `SOMETHING WENT WRONG. STATUS CODE: ${error.response.status}. ENJOY OUR DEFAULT DATA`
+      `SOMETHING WENT WRONG. STATUS CODE: ${error.response.status}. TRY ANOTHER PATH(ex: name, car) ENJOY OUR DEFAULT DATA`
     );
   }
 };
