@@ -8,7 +8,7 @@ app.use(cors());
 
 const PORT = process.env.PORT || 3000; // default port to listen
 
-app.get(`/api/:name`, (req: any, res: any) => {
+app.get(`/:name`, (req: any, res: any) => {
   const path = req.params.name;
   const data = RANDOM_DATA[path as keyof typeof RANDOM_DATA];
 
