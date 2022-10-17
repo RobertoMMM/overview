@@ -14,7 +14,7 @@ const config = document.getElementById("popUp") as HTMLDivElement;
 const saveNewData = async (path: string) => {
   try {
     const URL = `${SERVER.URL}/${path}`;
-
+console.log(URL)
     const responseFromServer = await Fetch.get(URL);
 
     LocalStorage.set(DATA.UNIQUE_DATA, responseFromServer);
